@@ -1,0 +1,9 @@
+dist
+.DS_Store
+.idea
+.out
+*.zip
+.env
+node_modules
+tsconfig.tsbuildinfo
+.vscode

@@ -1,0 +1,23 @@
+{
+	"files": [],
+	"references": [
+		{
+			"path": "./packages/geometry"
+		},
+		{
+			"path": "./packages/react-canvas-core"
+		},
+		{
+			"path": "./packages/react-diagrams"
+		},
+		{
+			"path": "./packages/react-diagrams-core"
+		},
+		{
+			"path": "./packages/react-diagrams-defaults"
+		},
+		{
+			"path": "./packages/react-diagrams-routing"
+		}
+	]
+}

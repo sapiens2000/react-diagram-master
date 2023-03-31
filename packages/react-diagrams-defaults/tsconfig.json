@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"rootDir": "src",
+		"declarationDir": "dist/@types",
+		"tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+	},
+	"references": [
+		{
+			"path": "../react-diagrams-core"
+		}
+	]
+}

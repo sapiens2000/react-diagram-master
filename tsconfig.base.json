@@ -1,0 +1,22 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"suppressExcessPropertyErrors": true,
+		"declaration": true,
+		"composite": true,
+		"incremental": true,
+		"strictNullChecks": false,
+		"sourceMap": true,
+		"inlineSources": true,
+		"skipLibCheck": true,
+		"jsx": "react",
+		"target": "ES6",
+		"moduleResolution": "Node",
+		"module": "es6",
+		"strict": false,
+		"lib": [
+			"DOM",
+			"ES6"
+		]
+	}
+}
