@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import createEngine, { DiagramModel, DefaultNodeModel, DefaultLinkModel, LinkModel } from '@projectstorm/react-diagrams';
 import { CanvasWidget, Action, ActionEvent, InputType } from '@projectstorm/react-canvas-core';
 import { DemoCanvasWidget } from '../helpers/DemoCanvasWidget';
+import { Menu, MenuItem } from '@material-ui/core';
+import { useCallback } from 'react';
 
 const mouseCodes = [0, 1, 2];
 
@@ -25,23 +27,11 @@ class CustomContextAction extends Action {
 							}
 						})
 					}
-					// if (selectedEntities.length > 0) {
-					// 	const confirm = window.confirm('Are you sure you want to delete?');
-
-					// 	if (confirm) {
-					// 		_.forEach(selectedEntities, (model) => {
-					// 			// only delete items which are not locked
-					// 			if (!model.isLocked()) {
-					// 				model.remove();
-					// 			}
-					// 		});
-					// 		this.engine.repaintCanvas();
-					// 	}
-					// }
 				}
 			}
 		});
 	}
+
 }
 
 export default () => {

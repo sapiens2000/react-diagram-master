@@ -1,15 +1,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
-import { Application } from '../Application';
 import { TrayItemWidget } from './TrayItemWidget';
 import { CanvasWidget } from '@projectstorm/react-canvas-core';
 import { DemoCanvasWidget } from '../DemoCanvasWidget';
 import styled from '@emotion/styled';
-import { DefaultNodeModel } from '../DefaultNodeModel';
+import { DefaultNodeModel } from '../components/node/DefaultNodeModel';
+import { DiagramEngine } from '@projectstorm/react-diagrams';
+import { ArrowPortModel } from '../components/link/ArrowLinkModel';
 
 export interface BodyWidgetProps {
-	app: Application;
+	engine: DiagramEngine;
 }
 
 namespace S {
@@ -57,19 +58,19 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<S.Layer
 						onDrop={(event) => {
 							var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-							var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
+							var nodesCount = _.keys(this.props.engine.getModel().getNodes()).length;
 
 							var node: DefaultNodeModel = null;
 							if (data.type === 'in') {
 								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(192,255,0)');
-								node.addInPort('In');
+								node.addPort(new ArrowPortModel(true, 'in'));
 							} else if (data.type === 'out'){
 								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(0,192,255)');
-								node.addOutPort('Out');
+								node.addPort(new ArrowPortModel(false, 'Out'));
 							} 
-							var point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
+							var point = this.props.engine.getRelativeMousePoint(event);
 							node.setPosition(point);
-							this.props.app.getDiagramEngine().getModel().addNode(node);
+							this.props.engine.getModel().addNode(node);
 							this.forceUpdate();
 						}}
 						onDragOver={(event) => {
@@ -77,7 +78,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						}}
 					>
 						<DemoCanvasWidget>
-							<CanvasWidget engine={this.props.app.getDiagramEngine()} />
+							<CanvasWidget engine={this.props.engine} />
 						</DemoCanvasWidget>
 					</S.Layer>
 				</S.Content>

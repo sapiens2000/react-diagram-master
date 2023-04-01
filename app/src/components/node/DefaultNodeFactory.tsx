@@ -9,11 +9,11 @@ export class DefaultNodeFactory extends AbstractReactFactory<DefaultNodeModel, D
 		super('default');
 	}
 
-	generateReactWidget(event): JSX.Element {
+	generateReactWidget(event: any): JSX.Element {
 		return <DefaultNodeWidget engine={this.engine} node={event.model} />;
 	}
 
-	generateModel(event): DefaultNodeModel {
+	generateModel(event: any): DefaultNodeModel {
 		return new DefaultNodeModel();
 	}
 }

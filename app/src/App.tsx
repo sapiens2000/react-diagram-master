@@ -1,42 +1,52 @@
-import React from 'react';
-import { DemoCanvasWidget } from './DemoCanvasWidget';
-import { TrayWidget } from './Tray/TrayWidget';
-import { TrayItemWidget } from './Tray/TrayItemWidget';
-import { BodyWidget } from './Tray/BodyWidget';
 import './App.css';
-import { Application } from './Application';
 
 import createEngine, { 
   DefaultLinkModel, 
-  DefaultNodeModel,
   DiagramModel 
 } from '@projectstorm/react-diagrams';
 
-import {
-  CanvasWidget
-} from '@projectstorm/react-canvas-core';
 
+import { DefaultNodeFactory } from './components/node/DefaultNodeFactory';
+import CustomContextAction from './CustomContextAction';
+import { BodyWidget } from './Tray/BodyWidget';
+import { DefaultNodeModel } from './components/node/DefaultNodeModel';
+import { ArrowLinkFactory } from './components/link/ArrowLinkFactory'
+import { ArrowPortModel } from './components/link/ArrowLinkModel';
 
 function App() {
   // create an instance of the engine with all the defaults
   const engine = createEngine();
+  engine.getNodeFactories().registerFactory(new DefaultNodeFactory());
+  engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
-  
+
   const model = new DiagramModel();
-  // model.addAll(node1, node2, link);
+
+  var node1 = new DefaultNodeModel('Node 1','rgb(0, 192, 255)');
+  var port1 = node1.addPort(new ArrowPortModel(false, 'out', 'out'));
+  node1.setPosition(100, 100);
+
+  var node2 = new DefaultNodeModel('Node 2', 'rgb(192, 255, 0)');
+  var port2 = node2.addPort(new ArrowPortModel(true, 'out', 'in'));
+  node2.setPosition(400, 100);
+
+  let link1 = port1.link(port2);
+
+  var node3 = new DefaultNodeModel('Node 3', 'rgb(192, 255, 0)');
+  node3.setPosition(100, 500);
+
+  var node4 = new DefaultNodeModel('Node 4', 'rgb(192, 255, 0)');
+  node4.setPosition(500, 450);
+
+  model.addAll(node1, node2, link1, node3, node4);
   engine.setModel(model);
+  engine.getActionEventBus().registerAction(new CustomContextAction());
 
   return (
-    <>
-      <DemoCanvasWidget>
-        <CanvasWidget className="canvas" engine={engine} />
-      </DemoCanvasWidget>
-    </>
-  );
+      <BodyWidget engine={engine}/>
+    );
 }
 
-export default () => {
-	var app = new Application();
-	return <BodyWidget app={app} />;
-};
+export default App;
+
 

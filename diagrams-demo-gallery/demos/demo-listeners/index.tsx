@@ -33,17 +33,17 @@ export default () => {
 	let models = model.addAll(node1, node2, node3, link1, link2);
 
 	// add a selection listener to each
-	models.forEach((item) => {
-		item.registerListener({
-			eventDidFire: 
-		});
-	});
+	// models.forEach((item) => {
+	// 	item.registerListener({
+	// 		eventDidFire: 
+	// 	});
+	// });
 
-	model.registerListener({
-		eventDidFire: () => {
-
-		}
-	});
+	// model.registerListener({
+	// 	eventDidFire: () => {
+			
+	// 	}
+	// });
 
 	engine.setModel(model);
 

@@ -46,6 +46,8 @@
 		"webpack-node-externals": "^3.0.0"
 	},
 	"dependencies": {
+		"@material-ui/core": "^4.12.4",
+		"@material-ui/icons": "^4.11.3",
 		"@projectstorm/react-diagrams": "^7.0.2",
 		"@types/lodash": "^4.14.192",
 		"@types/react": "^18.0.31",
