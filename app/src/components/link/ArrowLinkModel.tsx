@@ -3,7 +3,7 @@ import { DefaultLinkModel, DefaultPortModel } from "@projectstorm/react-diagrams
 export class ArrowLinkModel extends DefaultLinkModel {
 	constructor() {
 		super({
-			type: 'advanced',
+			type: 'arrow-link',
 			width: 4
 		});
 	}

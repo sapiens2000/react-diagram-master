@@ -4,7 +4,7 @@ import { ArrowLinkWidget } from "./ArrowLinkWidget";
 
 export class ArrowLinkFactory extends DefaultLinkFactory {
 	constructor() {
-		super('advanced');
+		super('arrow-link');
 	}
 
 	generateModel(): ArrowLinkModel {
