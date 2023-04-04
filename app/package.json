@@ -12,6 +12,7 @@
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.31",
     "@types/react-dom": "^18.0.11",
+    "json-beautify": "^1.1.1",
     "material-ui-popup-state": "^5.0.8",
     "react": "^18.2.0",
     "react-contexify": "^6.0.0",
