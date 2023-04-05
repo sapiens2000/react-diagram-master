@@ -1,6 +1,6 @@
 import { DefaultLinkWidget, LinkWidget, PointModel } from "@projectstorm/react-diagrams";
 
-const CustomLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?: any; }) => {
+const ArrowLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?: any; }) => {
 	const { point, previousPoint } = props;
 
 	const angle =
@@ -32,7 +32,7 @@ const CustomLinkArrowWidget = (props: { color?: any; point?: any; previousPoint?
 export class ArrowLinkWidget extends DefaultLinkWidget {
 	generateArrow(point: PointModel, previousPoint: PointModel): JSX.Element {
 		return (
-			<CustomLinkArrowWidget
+			<ArrowLinkArrowWidget
 				key={point.getID()}
 				point={point as any}
 				previousPoint={previousPoint as any}

@@ -2,15 +2,15 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
 import { TrayItemWidget } from './TrayItemWidget';
-import { CanvasWidget } from '@projectstorm/react-canvas-core';
-import { DemoCanvasWidget } from '../DemoCanvasWidget';
 import styled from '@emotion/styled';
 import { DefaultNodeModel } from '../components/node/DefaultNodeModel';
-import { DiagramEngine } from '@projectstorm/react-diagrams';
+import { CanvasWidget } from '@projectstorm/react-diagrams';
 import { ArrowPortModel } from '../components/link/ArrowLinkModel';
+import { WorkCanvasWidget } from '../WorkCanvasWidget';
+import App from '../App';
 
 export interface BodyWidgetProps {
-	engine: DiagramEngine;
+	app: App;
 }
 
 namespace S {
@@ -58,28 +58,28 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<S.Layer
 						onDrop={(event) => {
 							var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-							var nodesCount = _.keys(this.props.engine.getModel().getNodes()).length;
+							var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
 							var node: DefaultNodeModel = null;
 							if (data.type === 'in') {
-								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(192,255,0)');
+								node = new DefaultNodeModel('In ' + (nodesCount + 1), 'rgb(192,255,0)');
 								node.addPort(new ArrowPortModel(true, 'in'));
 							} else if (data.type === 'out'){
-								node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'rgb(0,192,255)');
+								node = new DefaultNodeModel('Out ' + (nodesCount + 1), 'rgb(0,192,255)');
 								node.addPort(new ArrowPortModel(false, 'Out'));
 							} 
-							var point = this.props.engine.getRelativeMousePoint(event);
+							var point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
 							node.setPosition(point);
-							this.props.engine.getModel().addNode(node);
+							this.props.app.getDiagramEngine().getModel().addNode(node);
 							this.forceUpdate();
 						}}
 						onDragOver={(event) => {
 							event.preventDefault();
 						}}
 					>
-						<DemoCanvasWidget>
-							<CanvasWidget engine={this.props.engine} />
-						</DemoCanvasWidget>
+						<WorkCanvasWidget>
+							<CanvasWidget engine={this.props.app.getDiagramEngine()} />
+						</WorkCanvasWidget>
 					</S.Layer>
 				</S.Content>
 			</S.Body>

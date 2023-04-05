@@ -8,9 +8,11 @@ export default class SerializeAction extends Action {
 			type: InputType.KEY_DOWN,
 			fire: (event: ActionEvent<React.KeyboardEvent>) => {
                 if (event.event.keyCode == 13) {		
-                    const AllEntities = this.engine.getModel().getSelectionEntities();
-                    if (AllEntities.length > 0){
-                        _.forEach(AllEntities, (model) => {
+                    
+                    const allEntities = this.engine.getModel().getSelectionEntities();
+                    const selectedEntities = this.engine.getModel().getSelectedEntities();
+                    if (selectedEntities.length > 0){
+                        _.forEach(selectedEntities, (model) => {
                             console.log(model.serialize());
                         })    
                     }

@@ -1,52 +1,66 @@
 import './App.css';
-
-import createEngine, { 
-  DefaultLinkModel, 
-  DiagramModel 
-} from '@projectstorm/react-diagrams';
-
+import * as SRD from '@projectstorm/react-diagrams';
 
 import { DefaultNodeFactory } from './components/node/DefaultNodeFactory';
-import CustomContextAction from './CustomContextAction';
-import { BodyWidget } from './Tray/BodyWidget';
+import ContextAction from './ContextAction';
 import { DefaultNodeModel } from './components/node/DefaultNodeModel';
 import { ArrowLinkFactory } from './components/link/ArrowLinkFactory'
 import { ArrowPortModel } from './components/link/ArrowLinkModel';
+import SerializeAction from './SerializeAction';
+import beautify from 'json-beautify';
 
-function App() {
-  // create an instance of the engine with all the defaults
-  const engine = createEngine();
-  engine.getNodeFactories().registerFactory(new DefaultNodeFactory());
-  engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
+export default class App {
+  protected activeModel: SRD.DiagramModel;
+	protected engine: SRD.DiagramEngine;
+
+  constructor() {
+		this.engine = SRD.default();
+		this.newModel();
+	}
+
+  public newModel(){
+    this.engine.setModel(this.activeModel);
+    
+    this.engine.getNodeFactories().registerFactory(new DefaultNodeFactory());
+    this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
 
 
-  const model = new DiagramModel();
+    const model = new SRD.DiagramModel();
 
-  var node1 = new DefaultNodeModel('Node 1','rgb(0, 192, 255)');
-  var port1 = node1.addPort(new ArrowPortModel(false, 'out', 'out'));
-  node1.setPosition(100, 100);
+    var node1 = new DefaultNodeModel('Node 1','rgb(0, 192, 255)');
+    var port1 = node1.addPort(new ArrowPortModel(false, 'out', 'out'));
+    node1.setPosition(100, 100);
 
-  var node2 = new DefaultNodeModel('Node 2', 'rgb(192, 255, 0)');
-  var port2 = node2.addPort(new ArrowPortModel(true, 'out', 'in'));
-  node2.setPosition(400, 100);
+    var node2 = new DefaultNodeModel('Node 2', 'rgb(192, 255, 0)');
+    var port2 = node2.addPort(new ArrowPortModel(true, 'out', 'in'));
+    node2.setPosition(400, 100);
 
-  let link1 = port1.link(port2);
+    let link1 = port1.link(port2);
 
-  var node3 = new DefaultNodeModel('Node 3', 'rgb(192, 255, 0)');
-  node3.setPosition(100, 500);
+    model.addAll(node1, node2, link1);
+    this.engine.setModel(model);
 
-  var node4 = new DefaultNodeModel('Node 4', 'rgb(192, 255, 0)');
-  node4.setPosition(500, 450);
+    // add events
+    this.engine.getActionEventBus().registerAction(new ContextAction());
+    this.engine.getActionEventBus().registerAction(new SerializeAction());
+    var str = JSON.stringify(model.serialize());
+    console.log(str);
+    var model2 = new SRD.DiagramModel();
+    model2.deserializeModel(JSON.parse(str), this.engine);
 
-  model.addAll(node1, node2, link1, node3, node4);
-  engine.setModel(model);
-  engine.getActionEventBus().registerAction(new CustomContextAction());
+    this.engine.setModel(model2);
+    console.log(model2.serialize());
 
-  return (
-      <BodyWidget engine={engine}/>
-    );
+  }
+
+	public getActiveDiagram(): SRD.DiagramModel {
+		return this.activeModel;
+	}
+
+	public getDiagramEngine(): SRD.DiagramEngine {
+		return this.engine;
+	}
 }
 
-export default App;
 
 

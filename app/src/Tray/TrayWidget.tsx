@@ -10,7 +10,7 @@ namespace S {
 	`;
 }
 
-export class TrayWidget extends React.Component {
+export class TrayWidget extends React.Component<any> {
 	render() {
 		return <S.Tray>{this.props.children}</S.Tray>;
 	}
