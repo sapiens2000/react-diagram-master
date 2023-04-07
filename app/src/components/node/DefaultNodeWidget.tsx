@@ -5,7 +5,6 @@ import { DefaultNodeModel } from './DefaultNodeModel';
 import styled from '@emotion/styled';
 import { ChangeEvent } from 'react';
 import { DefaultPortLabel, DefaultPortModel } from '@projectstorm/react-diagrams';
-import { useState } from 'react';
 
 namespace S {
 	export const Node = styled.div<{ background: string; selected: boolean }>`
@@ -60,7 +59,7 @@ interface DropDownProps {
 	options: string[];
 	value: string;
 	onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-  }
+}
   
 export const DropDown = ({ options, value, onChange }: DropDownProps) => {
 	return (
@@ -74,17 +73,19 @@ export const DropDown = ({ options, value, onChange }: DropDownProps) => {
 	);
 }
 
-  
   /**
  * Default node that models the DefaultNodeModel. It creates two columns
  * for both all the input ports on the left, and the output ports on the right.
  */
-export class DefaultNodeWidget extends React.Component<DefaultNodeProps> {
+
+
+
+export class DefaultNodeWidget extends React.Component<DefaultNodeProps> {	
 	generatePort = (port: DefaultPortModel) => {
 		return <DefaultPortLabel engine={this.props.engine} port={port} key={port.getID()} />;
 	};
 
-	render() {
+	render() {	
 		return (
 			<S.Node 
 				data-default-node-name={this.props.node.getOptions().name}

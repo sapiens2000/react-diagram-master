@@ -36,7 +36,7 @@ export class ArrowLinkWidget extends DefaultLinkWidget {
 				key={point.getID()}
 				point={point as any}
 				previousPoint={previousPoint as any}
-				colorSelected={this.props.link.getOptions().selectedColor}
+				//colorSelected={this.props.link.getOptions().selectedColor}
 				color={this.props.link.getOptions().color}
 			/>
 		);
