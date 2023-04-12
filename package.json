@@ -48,6 +48,7 @@
 	"dependencies": {
 		"@material-ui/core": "^4.12.4",
 		"@material-ui/icons": "^4.11.3",
+		"@mui/joy": "^5.0.0-alpha.74",
 		"@projectstorm/react-diagrams": "^7.0.2",
 		"@types/lodash": "^4.14.192",
 		"@types/react": "^18.0.31",
