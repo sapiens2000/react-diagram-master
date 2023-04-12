@@ -1,6 +1,11 @@
 .App {
   text-align: center;
 }
+
+.save-modal{
+  background-color: 'white';
+}
+
 .canvas{
   position: inherit !important;
 }

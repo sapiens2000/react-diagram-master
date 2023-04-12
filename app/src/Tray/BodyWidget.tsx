@@ -8,7 +8,11 @@ import { CanvasWidget } from '@projectstorm/react-diagrams';
 import { ArrowPortModel } from '../components/link/ArrowLinkModel';
 import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
-import SelectNodeModel from '../components/node/SelectNodeModel';
+import SelectNodeModel from '../components/node/SqlNodeModel';
+import SaveNodeModel from '../components/node/SaveNodeModel';
+import Button from '@mui/material/Button';
+import FilterNode from '../components/node/FilterNode';
+
 
 export interface BodyWidgetProps {
 	app: App;
@@ -52,12 +56,6 @@ namespace S {
 	export const Nav = styled.div`
 		background: rgb(60, 60, 60);
 	`
-}
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
 }
 
 // function TabPanel(props: TabPanelProps) {
@@ -108,12 +106,6 @@ interface TabPanelProps {
 //   );
 // }
 
-function EditTitle(){
-	return(
-		<input type='text'>test</input>
-	)
-}
-
 export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
@@ -122,12 +114,13 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<TrayWidget>
 						<TrayItemWidget model={{ type: 'in' }} name="In Node" color="rgb(192,255,0)" />
 						<TrayItemWidget model={{ type: 'out' }} name="Out Node" color="rgb(0,192,255)" />
-						<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)" />
+						<TrayItemWidget model={{ type: 'sql' }} name="Select Node" color="rgb(0,192,255)" />
+						<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)" />
+						<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)" />
 					</TrayWidget>
 					<S.Content2>
 						<S.Header>
 							<div className="title">Demo
-								{/* <EditTitle></EditTitle> */}
 							</div>
 						</S.Header>
 						<S.Layer
@@ -135,15 +128,19 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-								var node: DefaultNodeModel | SelectNodeModel = null;
+								var node: DefaultNodeModel | SelectNodeModel | SaveNodeModel = null;
 								if (data.type === 'in') {
 									node = new DefaultNodeModel('In ' + (nodesCount + 1), 'rgb(192,255,0)');
 									node.addPort(new ArrowPortModel(true, 'in'));
 								} else if (data.type === 'out'){
 									node = new DefaultNodeModel('Out ' + (nodesCount + 1), 'rgb(0,192,255)');
 									node.addPort(new ArrowPortModel(false, 'Out'));
-								} else if (data.type === 'select'){
+								} else if (data.type === 'sql'){
 									node = new SelectNodeModel(this.props.app.getDiagramEngine());
+								} else if (data.type === 'save'){
+									node = new SaveNodeModel(this.props.app.getDiagramEngine());
+								} else if (data.type === 'filter'){
+									node = new FilterNode(this.props.app.getDiagramEngine());
 								}
 								var point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
 								node.setPosition(point);
@@ -157,6 +154,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							<WorkCanvasWidget>
 								<CanvasWidget engine={this.props.app.getDiagramEngine()} />
 							</WorkCanvasWidget>
+							
 						</S.Layer>
 					</S.Content2>
 				</S.Content>

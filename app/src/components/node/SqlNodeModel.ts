@@ -5,7 +5,9 @@ import {
 } from "@projectstorm/react-diagrams";
 import { ArrowPortModel } from "../link/ArrowLinkModel";
 
-export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
+export class SqlNodeModel extends NodeModel<NodeModelGenerics>{
+    sql: string;
+
     dataSet = {
         table : '',
         column : '',
@@ -36,7 +38,7 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
     outPort = new ArrowPortModel(false, "out");
 
     constructor(readonly engine: CanvasEngine) {
-        super({ type: "select-node" });
+        super({ type: "sql" });
         this.addPort(this.outPort);
     }
 
@@ -54,4 +56,4 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
     }
 }
 
-export default SelectNodeModel;
+export default SqlNodeModel;

@@ -56,7 +56,7 @@ export class ArrowLinkWidget extends DefaultLinkWidget {
 					{
 						'data-linkid': this.props.link.getID(),
 						'data-point': j,
-						onMouseDown: (event: MouseEvent) => {
+						onMouseDown: (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
 							this.addPointToLink(event, j + 1);
 						}
 					},

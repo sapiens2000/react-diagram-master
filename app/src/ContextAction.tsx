@@ -8,7 +8,7 @@ export default class ContextAction extends Action {
 	constructor(){
 		super({
 			type: InputType.MOUSE_DOWN,
-			fire: (event: ActionEvent<React.MouseEvent>) => {
+			fire: (event: ActionEvent<React.MouseEvent<Element, MouseEvent>>) => {
 				const selectedEntities = this.engine.getModel().getSelectedEntities();
 				if (selectedEntities.length === 1){
 					if (event.event.button == 2) {		

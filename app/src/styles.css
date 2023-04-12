@@ -1,0 +1,43 @@
+* {
+    font-family: Righteous;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, #eee 1px, transparent 1px),
+    linear-gradient(to bottom, #eee 1px, transparent 1px);
+}
+
+.canvas {
+    height: 100vh;
+}
+
+
+
+.modal-content {
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    width: 300px;
+    border-radius: 12px;
+    position: relative;
+    padding: 8px;
+    box-sizing: border-box;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-content__close {
+    display: inline-flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.modal-content__main {
+    /*display: flex;*/
+
+    padding: 1rem;
+}
