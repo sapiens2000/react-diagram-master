@@ -1,5 +1,5 @@
 import {Container, Typography, Button,
-        TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Autocomplete, TextField } from "@mui/material";
+        TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Autocomplete, TextField, Select, MenuItem, Grid } from "@mui/material";
 import {Box} from "@mui/system";
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -78,7 +78,7 @@ const columns: GridColDef[] = [
 
 const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     const [curType, setCurType] = useState('');
-    const [table, setTable] = useState(['']);
+    const [tables, setTables] = useState(['']);
 
 
    
@@ -99,8 +99,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
 
     const handleType = (event: React.ChangeEvent, value: string) => {
         setCurType(value);
-
-      
+    
         switch(curType){
             case 'INSERT':
                 console.log('insert');
@@ -124,60 +123,62 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     return (
         <Modal>
             <Container>
-
                 <Typography>OUTPUT</Typography>
                 <div style={{
                     overflow: 'hidden',
                     marginTop: '10px'
                 }}>
-                    <Typography style={{
-                        float: 'left',
-                        width: '15%'
-                    }}>유형</Typography>
-                    <Autocomplete
-                        style={{
-                            width: '85%',
-                            float: 'right'
-                        }}
-                        defaultValue={curType}
-                        onChange={(event: React.ChangeEvent<HTMLElement>, value) => handleType(event, value)}
-                        id="type"
-                        //getOptionLabel={(options) => `${options}`}
-                        options={options}
-                        noOptionsText={"No Available Type"}
-                        renderOption={(props, options) => (
-                            <Box component="li" {...props} key={options} value={curType}>
-                                {options}
-                            </Box>
-                        )}
-                        renderInput={(params) => <TextField {...params}/>}
-                    />
+                    <Grid container spacing={2} >
+                        <Grid item xs={2} alignItems="center">
+                            <Typography style={{ 
+                                display: "flex", 
+                                alignItems: "center", 
+                                height: "100%" ,
+                                justifyContent: "center"
+                            }}>유형</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Select
+                                fullWidth
+                                value={curType}
+                                onChange={(e) => setCurType(e.target.value)}
+                            >
+                                {options.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
+                    </Grid>
                 </div>
                 <div style={{
                     overflow: 'hidden',
                     marginTop: '10px'
                 }}>
-                <Typography style={{
-                        float: 'left',
-                        width: '15%'
-                    }}>테이블</Typography>
-                <Autocomplete
-                        style={{
-                            width: '85%',
-                            float: 'right'
-                        }}
-                        onChange={(event, value) => handleTable(event, value)}
-                        id="table"
-                        getOptionLabel={(table) => `${table}`}
-                        options={table}
-                        noOptionsText={"No Available Table"}
-                        renderOption={(props, options) => (
-                            <Box component="li" {...props} value={table}>
-                                {}
-                            </Box>
-                        )}
-                        renderInput={(params) => <TextField {...params}/>}
-                />
+                <Grid container spacing={2}>
+                <Grid item xs={2} alignItems="center">
+                            <Typography style={{ 
+                                display: "flex", 
+                                alignItems: "center", 
+                                height: "100%" ,
+                                justifyContent: "center"
+                            }}>테이블</Typography>
+                        </Grid>
+                    <Grid item xs={10}>
+                        <Select
+                            fullWidth
+                            value={curType}
+                            onChange={(e) => handleTable(e, e.target.value)}
+                        >
+                            {tables.map((table) => (
+                                <MenuItem key={table} value={table}>
+                                    {table}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </Grid>
+                </Grid>
                 </div>
                 <div style={{ 
                     height: 300, 
@@ -221,6 +222,20 @@ const rows2: GridRowsProp = [
   }
 ];
 
+const filter_data = [
+    {
+      "LOG_DATE": "2023-04-25",
+      "LOG_TIME": "15:30:00",
+      "LOG_USER_ID": "user123",
+      "LOG_PAY_ACC": 12345
+    },
+    {
+      "LOG_DATE": "2023-04-24",
+      "LOG_TIME": "14:25:00",
+      "LOG_USER_ID": "user456",
+      "LOG_PAY_ACC": 67890
+    }
+  ]
 
 
 /* function getFullName(params: GridValueGetterParams) {
