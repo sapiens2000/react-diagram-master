@@ -2,9 +2,11 @@ import React, {FC, useState} from "react";
 import { DiagramEngine } from "@projectstorm/react-diagrams";
 import {SaveNode} from "./SaveNodeModel";
 
-import {Container, Button, IconButton, Typography} from "@mui/material";
+import {Container} from "@mui/material";
 import SaveModal from "../modal/SaveModal";
 import * as S from "../../adstyled";
+import EastIcon from '@mui/icons-material/East';
+
 
 export interface SaveNodeWidgetProps {
     node: SaveNode;
@@ -27,7 +29,8 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                     style={{ left: -4, top: "50%" }}
                 />
                 <Container>
-                    <Typography>SAVE</Typography>
+                    <EastIcon fontSize="large"/>
+                    {/* <Typography>SAVE</Typography> */}
                 </Container>    
             </S.Widget>
             {onModal && <SaveModal dataSet={null} setOnModal={setOnModal}/>}

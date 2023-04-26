@@ -5,7 +5,8 @@ import {SqlNodeModel} from "./SqlNodeModel";
 import {Container} from "@mui/material";
 import StorageIcon from '@mui/icons-material/Storage';
 import * as S from "../../adstyled";
-import SqlModalFrame from "../modal/SqlModalFrame";
+import SqlModal from "../modal/SqlModal";
+
 
 
 interface SqlNodeWidgetAdvancedProps {
@@ -30,10 +31,10 @@ const SqlNodeWidget : FC<SqlNodeWidgetAdvancedProps> = ({engine, node}) => {
                     style={{ right: -4, top: "50%" }}
                 />
                 <Container>
-                    <StorageIcon />
+                    <StorageIcon fontSize="large"/>
                 </Container>
             </S.Widget>
-            {onModal && <SqlModalFrame setSql={setSql} setOnModal={setOnModal}/>}
+            {onModal && <SqlModal setSql={setSql} setOnModal={setOnModal}/>}
         </div>
     );
 };
