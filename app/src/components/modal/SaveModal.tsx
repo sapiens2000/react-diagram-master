@@ -1,7 +1,9 @@
 import {Container, Typography, Button,
         TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Autocomplete, TextField } from "@mui/material";
 import {Box} from "@mui/system";
+
 import React, { useCallback, useEffect, useState } from "react";
+
 import '../../App.css';
 import styled from "@emotion/styled";
 import axios from "axios";
@@ -12,6 +14,7 @@ import {
     GridValueGetterParams,
     GridValueSetterParams,
 } from '@mui/x-data-grid';
+
 import { createStrictEquality } from "typescript";
 
 export const Modal = styled.div`
@@ -32,7 +35,9 @@ export const ButtonBox = styled.div`
     margin-top: 15px;
 `;
 
+
 const options = ['INSERT', 'SAVE', 'UPDATE', 'DELETE'];
+
 
 export interface SaveModalProps {
     dataSet: any;
@@ -75,32 +80,8 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     const [curType, setCurType] = useState('');
     const [table, setTable] = useState(['']);
 
-    // useEffect(() => {
-    //     axios
-    //         .get(
-    //             "http://localhost:5000/test"
-    //         )
-    //         .then((response) => {
-    //             setTable(response.data);
-    //             console.log(table);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // }, []);
 
-/*  const country = [...new Set(data.map((item) => item.country))];
-    
-
-    const handleCountry = (event, value) => {
-        let states = data.filter((state) => state.country === value);
-        states = [...new Set(states.map((item) => item.name))];
-        states.sort();
-
-        setTable(value);
-        //setColumn(states);
-    }; */
-
+   
     const createSql = () => {
         let sql = curType;
 
@@ -118,7 +99,8 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
 
     const handleType = (event: React.ChangeEvent, value: string) => {
         setCurType(value);
-        
+
+      
         switch(curType){
             case 'INSERT':
                 console.log('insert');
@@ -135,8 +117,6 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
         }
     };
 
-
-
     const handleTable = (event: React.ChangeEvent, value: string) => {
         console.log('handle table');
     }
@@ -144,6 +124,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     return (
         <Modal>
             <Container>
+
                 <Typography>OUTPUT</Typography>
                 <div style={{
                     overflow: 'hidden',
@@ -219,7 +200,6 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                         float: 'right'
                     }}
                     onClick={handleClickSubmit} variant="contained">저장</Button>
-
                 </ButtonBox>
             </Container>
         </Modal>

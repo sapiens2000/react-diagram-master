@@ -8,6 +8,7 @@ import * as S from "../../adstyled";
 import SqlModal from "../modal/SqlModal";
 
 
+
 interface SqlNodeWidgetAdvancedProps {
     node: SqlNodeModel;
     engine: DiagramEngine;
