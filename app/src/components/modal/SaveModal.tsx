@@ -1,7 +1,7 @@
 import {Container, Typography, Button,
         TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Autocomplete, TextField } from "@mui/material";
 import {Box} from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import '../../App.css';
 import styled from "@emotion/styled";
 import axios from "axios";
@@ -12,6 +12,7 @@ import {
     GridValueGetterParams,
     GridValueSetterParams,
 } from '@mui/x-data-grid';
+import { createStrictEquality } from "typescript";
 
 export const Modal = styled.div`
     box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
@@ -31,7 +32,7 @@ export const ButtonBox = styled.div`
     margin-top: 15px;
 `;
 
-const options = ['INSERT', 'SAVE'];
+const options = ['INSERT', 'SAVE', 'UPDATE', 'DELETE'];
 
 export interface SaveModalProps {
     dataSet: any;
@@ -71,24 +72,24 @@ const columns: GridColDef[] = [
   ];
 
 const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
-    const [curType, setCurType] = useState('INSERT');
-    const [table, setTable] = useState([]);
+    const [curType, setCurType] = useState('');
+    const [table, setTable] = useState(['']);
 
-    useEffect(() => {
-        axios
-            .get(
-                "http://localhost:5000/test"
-            )
-            .then((response) => {
-                setTable(response.data);
-                console.log(table);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get(
+    //             "http://localhost:5000/test"
+    //         )
+    //         .then((response) => {
+    //             setTable(response.data);
+    //             console.log(table);
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // }, []);
 
-/*     const country = [...new Set(data.map((item) => item.country))];
+/*  const country = [...new Set(data.map((item) => item.country))];
     
 
     const handleCountry = (event, value) => {
@@ -100,16 +101,41 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
         //setColumn(states);
     }; */
 
+    const createSql = () => {
+        let sql = curType;
+
+        switch(curType){
+            case 'INSERT':
+                console.log(sql + ' INTO VALUES(');
+                break;
+        }
+    }
+
     const handleClickSubmit = () => {
-        alert('저장');
-        console.log(curType)
+        createSql();
         props.setOnModal(false);
     }
 
     const handleType = (event: React.ChangeEvent, value: string) => {
         setCurType(value);
-        console.log(curType);
-    }
+        
+        switch(curType){
+            case 'INSERT':
+                console.log('insert');
+                break;
+            case 'SAVE':
+                console.log('save');
+                break;
+            case 'UPDATE':
+                console.log('update');
+                break;
+            case 'DELETE':
+                console.log('delete');
+                break;
+        }
+    };
+
+
 
     const handleTable = (event: React.ChangeEvent, value: string) => {
         console.log('handle table');
@@ -118,9 +144,22 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     return (
         <Modal>
             <Container>
-                <Typography>유형</Typography>
-                <Autocomplete
-                        onChange={(event, value) => handleType(event, value)}
+                <Typography>OUTPUT</Typography>
+                <div style={{
+                    overflow: 'hidden',
+                    marginTop: '10px'
+                }}>
+                    <Typography style={{
+                        float: 'left',
+                        width: '15%'
+                    }}>유형</Typography>
+                    <Autocomplete
+                        style={{
+                            width: '85%',
+                            float: 'right'
+                        }}
+                        defaultValue={curType}
+                        onChange={(event: React.ChangeEvent<HTMLElement>, value) => handleType(event, value)}
                         id="type"
                         //getOptionLabel={(options) => `${options}`}
                         options={options}
@@ -131,10 +170,21 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                             </Box>
                         )}
                         renderInput={(params) => <TextField {...params}/>}
-                />
-
-                <Typography>테이블</Typography>
+                    />
+                </div>
+                <div style={{
+                    overflow: 'hidden',
+                    marginTop: '10px'
+                }}>
+                <Typography style={{
+                        float: 'left',
+                        width: '15%'
+                    }}>테이블</Typography>
                 <Autocomplete
+                        style={{
+                            width: '85%',
+                            float: 'right'
+                        }}
                         onChange={(event, value) => handleTable(event, value)}
                         id="table"
                         getOptionLabel={(table) => `${table}`}
@@ -147,6 +197,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                         )}
                         renderInput={(params) => <TextField {...params}/>}
                 />
+                </div>
                 <div style={{ 
                     height: 300, 
                     width: '100%' ,
@@ -155,10 +206,20 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     <DataGrid rows={rows2} columns={columns} />
                 </div>
                 <ButtonBox style={{ 
-                    marginTop: '10px' 
+                    marginTop: '10px', 
+                    overflow: 'hidden'
                 }}>
-                    <Button onClick={handleClickSubmit} variant="contained">저장</Button>
-                    <Button onClick={() => props.setOnModal(false)} variant="text">닫기</Button>
+                    <Button 
+                    style={{
+                        float: 'right'
+                    }}
+                    onClick={() => props.setOnModal(false)} variant="text">닫기</Button>
+                    <Button 
+                    style={{
+                        float: 'right'
+                    }}
+                    onClick={handleClickSubmit} variant="contained">저장</Button>
+
                 </ButtonBox>
             </Container>
         </Modal>

@@ -21,12 +21,12 @@ export const Modal = styled.div`
     justify-content: space-between;
 	`;
 
-export interface SqlModalFrameProps {
+export interface SqlModalProps {
     setSql: (sql: string) => void;
     setOnModal: (state: boolean) => void;
 };
 
-const SqlModalFrame: React.FC<SqlModalFrameProps> = (props : SqlModalFrameProps) => {
+const SqlModal: React.FC<SqlModalProps> = (props : SqlModalProps) => {
 
     const handleSave = (sql: string) => {
         alert('저장');        
@@ -64,4 +64,4 @@ const SqlModalFrame: React.FC<SqlModalFrameProps> = (props : SqlModalFrameProps)
     )
 };
 
-export default SqlModalFrame;
+export default SqlModal;
