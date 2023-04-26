@@ -28,6 +28,18 @@ export default class App {
     this.engine.getNodeFactories().registerFactory(new FilterNodeFactory());
 
     const model = new SRD.DiagramModel()
+    
+    model.registerListener({
+      linksUpdated: (event: any) => {
+        event.link.registerListener({
+          targetPortChanged: (event: any) => {
+            console.log(event.link);
+          }
+        });
+      }
+    });
+
+    
     this.engine.setModel(model);
 
     this.engine.getActionEventBus().registerAction(new SerializeAction());
