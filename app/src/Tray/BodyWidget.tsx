@@ -5,14 +5,16 @@ import { TrayItemWidget } from './TrayItemWidget';
 import styled from '@emotion/styled';
 import { DefaultNodeModel } from '../components/node/DefaultNodeModel';
 import { CanvasWidget } from '@projectstorm/react-diagrams';
-import { ArrowPortModel } from '../components/link/ArrowLinkModel';
 import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
-import SelectNodeModel from '../components/node/SqlNodeModel';
+import SqlNodeModel from '../components/node/SqlNodeModel';
 import SaveNodeModel from '../components/node/SaveNodeModel';
-import Button from '@mui/material/Button';
 import FilterNode from '../components/node/FilterNode';
-
+import { IconButton } from '@mui/material';
+import FolderOpenIcon from '@mui/icons-material/FolderOpen';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
+import saveAs from 'file-saver';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -33,8 +35,9 @@ namespace S {
 		flex-shrink: 0;
 		color: white;
 		font-family: Helvetica, Arial, sans-serif;
-		padding: 10px;
+		padding: 0 20px;
 		align-items: center;
+		justify-content: space-between;
 	`;
 
 	export const Content = styled.div`
@@ -56,87 +59,104 @@ namespace S {
 	export const Nav = styled.div`
 		background: rgb(60, 60, 60);
 	`
+
+	export const ButtonBox = styled.div`
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	`
 }
 
-// function TabPanel(props: TabPanelProps) {
-//   const { children, value, index, ...other } = props;
-
-//   return (
-//     <div
-//       role="tabpanel"
-//       hidden={value !== index}
-//       id={`simple-tabpanel-${index}`}
-//       aria-labelledby={`simple-tab-${index}`}
-//       {...other}
-//     >
-//       {value === index && (
-//         <Box sx={{ p: 3 }}>
-//           <Typography>{children}</Typography>
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
-
-// function a11yProps(index: number) {
-//   return {
-//     id: `simple-tab-${index}`,
-//     'aria-controls': `simple-tabpanel-${index}`,
-//   };
-// }
-
-// function BasicTabs() {
-//   const [value, setValue] = React.useState(0);
-
-//   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-//     setValue(newValue);
-//   };
-
-//   return (
-//     <Box sx={{ width: '100%' }}>
-//       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-//         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-//           <Tab label="Item One" {...a11yProps(0)} />
-//         </Tabs>
-//       </Box>
-//       <TabPanel value={value} index={0}>
-//         P1
-//       </TabPanel>
-//     </Box>
-//   );
-// }
-
 export class BodyWidget extends React.Component<BodyWidgetProps> {
+
+	loadProject = (project: string) => {
+		const engine = this.props.app.getDiagramEngine()
+		console.log(JSON.parse(project));
+		engine.getModel().deserializeModel(JSON.parse(project), engine);
+		this.forceUpdate();
+	}
+
+	handlePlay = () => {
+		console.log('play project')
+	}
+	
+	handleSaveProject = () => {
+		let project_json = this.props.app.getDiagramEngine().getModel().serialize();
+		// let allEntities = this.props.app.getDiagramEngine().getModel().getSelectionEntities();
+		// if (allEntities.length > 0){
+		// 	_.forEach(allEntities, (node) => {
+		// 		project_json.push(node.serialize());
+		// 	})    
+		// }
+		console.log(project_json);
+		console.log('save project')
+		const file = new File([JSON.stringify(project_json)], '구조.txt', { type: 'text/plain;charset=utf-8' });
+       	saveAs(file);
+	}
+
+	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// only choose 1st file
+		const file = e.target.files?.[0];
+		console.log('file selected');
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+			  const result = e?.target?.result;
+			  if (typeof result === 'string') {
+				this.loadProject(result);
+			  }
+			};
+			reader.readAsText(file);
+		}	
+	}
+
 	render() {
 		return (
 			<S.Body>
 				<S.Content>
 					<TrayWidget>
-						<TrayItemWidget model={{ type: 'in' }} name="In Node" color="rgb(192,255,0)" />
-						<TrayItemWidget model={{ type: 'out' }} name="Out Node" color="rgb(0,192,255)" />
-						<TrayItemWidget model={{ type: 'sql' }} name="Select Node" color="rgb(0,192,255)" />
+						<TrayItemWidget model={{ type: 'sql' }} name="Sql Node" color="rgb(0,192,255)" />
 						<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)" />
 						<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)" />
 					</TrayWidget>
 					<S.Content2>
 						<S.Header>
-							<div className="title">Demo
-							</div>
+						<div
+						className="title"
+						onDoubleClick={(event) => (event.target as HTMLDivElement).setAttribute("contentEditable", "true")}
+						onBlur={(event) => (event.target as HTMLDivElement).removeAttribute("contentEditable")}
+						// onKeyDown={(event) => (event.target as HTMLDivElement).blur()}
+						>
+						프로젝트명
+						</div>
+							<S.ButtonBox>
+								<IconButton onClick={this.handlePlay}>
+									<PlayCircleFilledWhiteOutlinedIcon fontSize='large' style={{color: 'white'}}/>
+								</IconButton>
+								<IconButton onClick={this.handleSaveProject}>
+									<SaveOutlinedIcon fontSize='large'  style={{color: 'white'}}/>
+								</IconButton>
+								<IconButton>
+									<label htmlFor="file-input">
+										<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
+									</label>
+									<input
+										id="file-input"
+										type="file"
+										onChange={this.handleSelectFile}
+										style={{ display: 'none'}}
+									/>
+								</IconButton>
+							</S.ButtonBox>
 						</S.Header>
 						<S.Layer
 							onDrop={(event) => {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-								var node: DefaultNodeModel | SelectNodeModel | SaveNodeModel = null;
-								if (data.type === 'in') {
-									node = new DefaultNodeModel('In ' + (nodesCount + 1), 'rgb(192,255,0)');
-									node.addPort(new ArrowPortModel(true, 'in'));
-								} else if (data.type === 'out'){
-									node = new DefaultNodeModel('Out ' + (nodesCount + 1), 'rgb(0,192,255)');
-									node.addPort(new ArrowPortModel(false, 'Out'));
-								} else if (data.type === 'sql'){
-									node = new SelectNodeModel(this.props.app.getDiagramEngine());
+								var node: DefaultNodeModel | SqlNodeModel | SaveNodeModel = null;
+								if (data.type === 'sql'){
+									node = new SqlNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'save'){
 									node = new SaveNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'filter'){
@@ -153,8 +173,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						>
 							<WorkCanvasWidget>
 								<CanvasWidget engine={this.props.app.getDiagramEngine()} />
-							</WorkCanvasWidget>
-							
+							</WorkCanvasWidget>							
 						</S.Layer>
 					</S.Content2>
 				</S.Content>

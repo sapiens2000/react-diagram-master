@@ -1,10 +1,4 @@
 import React from 'react';
-import Box from '@mui/joy/Box';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/material/Input';
-import Button from '@mui/material/Button';
-import { Autocomplete, Container, Grid, TextField, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 
 export const Modal = styled.div`

@@ -1,12 +1,8 @@
-import {Container, Typography, Button,
-        TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Autocomplete, TextField, Select, MenuItem, Grid } from "@mui/material";
-import {Box} from "@mui/system";
-
+import {Container, Typography, Button, Select, MenuItem, Grid } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
 import '../../App.css';
 import styled from "@emotion/styled";
-import axios from "axios";
 import { 
     DataGrid, 
     GridColDef, 
@@ -66,28 +62,52 @@ const columns: GridColDef[] = [
     },
   ];
 
-const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
-    const [curType, setCurType] = useState('');
-    const [tables, setTables] = useState(['']);
- 
-    const createSql = () => {
-        let sql = curType;
 
-        switch(curType){
-            case 'INSERT':
-                console.log(sql + ' INTO VALUES(');
-                break;
-        }
+const rows: GridRowsProp = [
+    {
+      id: 1,
+      tableFieldName: '테스트필드',
+      type: '테스트',
+      mappingField: '테스트필드',
+      defaultValue: '테스트',
     }
+  ];
+  
+const filter_test_data = [
+    {
+    "LOG_DATE": "2023-04-25",
+    "LOG_TIME": "15:30:00",
+    "LOG_USER_ID": "user123",
+    "LOG_PAY_ACC": 12345
+    },
+    {
+    "LOG_DATE": "2023-04-24",
+    "LOG_TIME": "14:25:00",
+    "LOG_USER_ID": "user456",
+    "LOG_PAY_ACC": 67890
+    }
+  ];
 
-    const handleClickSubmit = () => {
-        createSql();
+const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
+    const [curType, setCurType] = useState('INSERT');
+    const [tables, setTables] = useState(['']);
+
+    const handleSaveChanges = () => {
+        console.log(curType);
         props.setOnModal(false);
     }
 
+    const handleEditCellChange = (params: any) => {
+        const updatedRows = [...rows];
+        updatedRows[params.id] = {
+        ...updatedRows[params.id],
+        [params.field]: params.value,
+        };
+        // console.log(updatedRows)
+    }
+
     const handleType = (event: React.ChangeEvent, value: string) => {
-        setCurType(value);
-    
+
         switch(curType){
             case 'INSERT':
                 console.log('insert');
@@ -104,7 +124,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
         }
     };
 
-    const handleTable = (event: React.ChangeEvent, value: string) => {
+    const handleTable = (event: any, value: string) => {
         console.log('handle table');
     }
 
@@ -156,7 +176,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     <Grid item xs={10}>
                         <Select
                             fullWidth
-                            value={curType}
+                            value={''}
                             onChange={(e) => handleTable(e, e.target.value)}
                         >
                             {tables.map((table) => (
@@ -173,7 +193,11 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     width: '100%' ,
                     marginTop: '10px'
                 }}>
-                    <DataGrid rows={rows2} columns={columns} />
+                    <DataGrid 
+                    rows={rows} 
+                    columns={columns} 
+                    onCellEditStop={handleEditCellChange}
+                    />
                 </div>
                 <ButtonBox style={{ 
                     marginTop: '10px', 
@@ -188,7 +212,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     style={{
                         float: 'right'
                     }}
-                    onClick={handleClickSubmit} variant="contained">저장</Button>
+                    onClick={handleSaveChanges} variant="contained">저장</Button>
                 </ButtonBox>
             </Container>
         </Modal>
@@ -197,29 +221,3 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
 };
 
 export default SaveModal;
-
-// test data
-const rows2: GridRowsProp = [
-  {
-    id: 1,
-    tableFieldName: '테스트필드',
-    type: '테스트',
-    mappingField: '테스트필드',
-    defaultValue: '테스트',
-  }
-];
-
-const filter_data = [
-    {
-      "LOG_DATE": "2023-04-25",
-      "LOG_TIME": "15:30:00",
-      "LOG_USER_ID": "user123",
-      "LOG_PAY_ACC": 12345
-    },
-    {
-      "LOG_DATE": "2023-04-24",
-      "LOG_TIME": "14:25:00",
-      "LOG_USER_ID": "user456",
-      "LOG_PAY_ACC": 67890
-    }
-  ]

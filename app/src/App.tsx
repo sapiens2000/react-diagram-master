@@ -1,9 +1,7 @@
 import './App.css';
 import createEngine, * as SRD from '@projectstorm/react-diagrams';
-
 import { DefaultNodeFactory } from './components/node/DefaultNodeFactory';
 import { ArrowLinkFactory } from './components/link/ArrowLinkFactory'
-import SerializeAction from './SerializeAction';
 import SelectNodeFactory from './components/node/SqlNodeFactory';
 import SaveNodeFactory from './components/node/SaveNodeFactory';
 import FilterNodeFactory from './components/node/FilterNodeFactory';
@@ -39,16 +37,8 @@ export default class App {
       }
     });
 
-    
     this.engine.setModel(model);
-
-    this.engine.getActionEventBus().registerAction(new SerializeAction());
-    // var str = JSON.stringify(model.serialize());
-    // var model2 = new SRD.DiagramModel();
-    // model2.deserializeModel(JSON.parse(str), this.engine);
-
-    this.engine.setModel(model);
-
+  
   }
 
 	public getActiveDiagram(): SRD.DiagramModel {
@@ -60,3 +50,30 @@ export default class App {
 	}
 }
 
+// contextaction
+// import * as React from 'react';
+// import * as _ from 'lodash';
+// import {  DefaultNodeModel } from './components/node/DefaultNodeModel';
+// import { Action, ActionEvent, InputType } from '@projectstorm/react-canvas-core';
+
+
+// export default class ContextAction extends Action {
+// 	constructor(){
+// 		super({
+// 			type: InputType.MOUSE_DOWN,
+// 			fire: (event: ActionEvent<React.MouseEvent<Element, MouseEvent>>) => {
+// 				const selectedEntities = this.engine.getModel().getSelectedEntities();
+// 				if (selectedEntities.length === 1){
+// 					if (event.event.button == 2) {		
+// 						event.event.preventDefault();
+// 						selectedEntities.forEach(model => {
+// 							if (model instanceof DefaultNodeModel){					
+// 								event.event.preventDefault();
+// 							}
+// 						})
+// 					}
+// 				}
+// 			}
+// 		});
+// 	}
+// }
