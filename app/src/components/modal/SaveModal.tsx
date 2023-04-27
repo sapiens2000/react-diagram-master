@@ -11,11 +11,7 @@ import {
     DataGrid, 
     GridColDef, 
     GridRowsProp,
-    GridValueGetterParams,
-    GridValueSetterParams,
 } from '@mui/x-data-grid';
-
-import { createStrictEquality } from "typescript";
 
 export const Modal = styled.div`
     box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
@@ -36,7 +32,7 @@ export const ButtonBox = styled.div`
 `;
 
 
-const options = ['INSERT', 'SAVE', 'UPDATE', 'DELETE'];
+const options = ['INSERT', 'CSV'];
 
 
 export interface SaveModalProps {
@@ -68,20 +64,12 @@ const columns: GridColDef[] = [
       width: 200,
       editable: true,
     },
-    {
-      field: 'control',
-      headerName: '관리',
-      width: 180,
-      editable: true,
-    },
   ];
 
 const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     const [curType, setCurType] = useState('');
     const [tables, setTables] = useState(['']);
-
-
-   
+ 
     const createSql = () => {
         let sql = curType;
 
@@ -218,7 +206,6 @@ const rows2: GridRowsProp = [
     type: '테스트',
     mappingField: '테스트필드',
     defaultValue: '테스트',
-    control: '테스트'
   }
 ];
 
@@ -236,42 +223,3 @@ const filter_data = [
       "LOG_PAY_ACC": 67890
     }
   ]
-
-
-/* function getFullName(params: GridValueGetterParams) {
-  return `${params.row.firstName || ''} ${params.row.lastName || ''}`;
-}
-
-function setFullName(params: GridValueSetterParams) {
-  const [firstName, lastName] = params.value!.toString().split(' ');
-  return { ...params.row, firstName, lastName };
-}
-
-function parseFullName(value: any) {
-  return String(value)
-    .split(' ')
-    .map((str) => (str.length > 0 ? str[0].toUpperCase() + str.slice(1) : ''))
-    .join(' '); */
-
-
-// const columns: GridColDef[] = [
-//   { field: 'firstName', headerName: 'First name', width: 130, editable: true },
-//   { field: 'lastName', headerName: 'Last name', width: 130, editable: true },
-//   {
-//     field: 'fullName',
-//     headerName: 'Full name',
-//     width: 160,
-//     editable: true,
-//     valueGetter: getFullName,
-//     valueSetter: setFullName,
-//     valueParser: parseFullName,
-//   },
-// ];
-
-/* const defaultRows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon' },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei' },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime' },
-  { id: 4, lastName: 'Stark', firstName: 'Arya' },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys' },
-]; */
