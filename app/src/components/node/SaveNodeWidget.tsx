@@ -30,7 +30,6 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                 />
                 <Container>
                     <EastIcon fontSize="large"/>
-                    {/* <Typography>SAVE</Typography> */}
                 </Container>    
             </S.Widget>
             {onModal && <SaveModal dataSet={null} setOnModal={setOnModal}/>}
