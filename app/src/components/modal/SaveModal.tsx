@@ -1,4 +1,4 @@
-import {Container, Typography, Button, Select, MenuItem, Grid } from "@mui/material";
+import {Container, Typography, Button, Select, MenuItem, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
 import '../../App.css';
@@ -30,10 +30,11 @@ export const ButtonBox = styled.div`
 
 const options = ['INSERT', 'CSV'];
 
-
 export interface SaveModalProps {
     dataSet: any;
     setOnModal: (state: boolean) => void;
+    curType: string;
+    setCurType: (type: string) => void;
 }
 
 const columns: GridColDef[] = [
@@ -89,11 +90,11 @@ const filter_test_data = [
   ];
 
 const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
-    const [curType, setCurType] = useState('INSERT');
     const [tables, setTables] = useState(['']);
+    const fields = ["LOG_DATE", "LOG_TIME", "LOG_USER_ID", "LOG_PAY_ACC"];
 
     const handleSaveChanges = () => {
-        console.log(curType);
+        console.log(props.curType);
         props.setOnModal(false);
     }
 
@@ -108,7 +109,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
 
     const handleType = (event: React.ChangeEvent, value: string) => {
 
-        switch(curType){
+        switch(props.curType){
             case 'INSERT':
                 console.log('insert');
                 break;
@@ -148,8 +149,8 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                         <Grid item xs={10}>
                             <Select
                                 fullWidth
-                                value={curType}
-                                onChange={(e) => setCurType(e.target.value)}
+                                value={props.curType}
+                                onChange={(e) => props.setCurType(e.target.value)}
                             >
                                 {options.map((option) => (
                                     <MenuItem key={option} value={option}>
@@ -199,6 +200,35 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     onCellEditStop={handleEditCellChange}
                     />
                 </div>
+                {/* <TableContainer
+                component={Paper}
+                style={{ maxHeight: "267px", overflow: "auto", marginTop: "16px" }}
+                >
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>테이블 필드명</TableCell>
+                                <TableCell>조건</TableCell>
+                                <TableCell>필터값</TableCell>
+                                <TableCell>메모</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {fields.map((field, index) => (
+                                <TableRow
+                                    key={field}
+                                    onClick={() => {
+                                        //setSelectedField(field);                                        
+                                        //handleRowClick(index);
+                                    }}
+                                >
+                                    <TableCell>{field}<
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer> */}
+
                 <ButtonBox style={{ 
                     marginTop: '10px', 
                     overflow: 'hidden'

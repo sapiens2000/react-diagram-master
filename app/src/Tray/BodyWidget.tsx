@@ -15,6 +15,9 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import saveAs from 'file-saver';
+import EastIcon from '@mui/icons-material/East';
+import StorageIcon from '@mui/icons-material/Storage';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -71,7 +74,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	loadProject = (project: string) => {
 		const engine = this.props.app.getDiagramEngine()
-		console.log(JSON.parse(project));
 		engine.getModel().deserializeModel(JSON.parse(project), engine);
 		this.forceUpdate();
 	}
@@ -97,7 +99,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// only choose 1st file
 		const file = e.target.files?.[0];
-		console.log('file selected');
 		if (file) {
 			const reader = new FileReader();
 			reader.onload = (e) => {
@@ -115,9 +116,11 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			<S.Body>
 				<S.Content>
 					<TrayWidget>
-						<TrayItemWidget model={{ type: 'sql' }} name="Sql Node" color="rgb(0,192,255)" />
-						<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)" />
-						<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)" />
+						<div>
+							<TrayItemWidget model={{ type: 'sql' }} name="Sql Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
+						</div>
 					</TrayWidget>
 					<S.Content2>
 						<S.Header>

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
-
 export interface TrayItemWidgetProps {
 	model: any;
 	color: string;
 	name: string;
+	children: React.ReactNode;
 }
 
 namespace S {
@@ -17,23 +17,25 @@ namespace S {
 		border-radius: 5px;
 		margin-bottom: 2px;
 		cursor: pointer;
-		width: 50%;
+		width: 35%;
+		display: flex;
 	`;
 }
 
 export class TrayItemWidget extends React.Component<TrayItemWidgetProps> {
 	render() {
 		return (
-			<S.Tray
-				color={this.props.color}
-				draggable={true}
-				onDragStart={(event) => {
-					event.dataTransfer.setData('storm-diagram-node', JSON.stringify(this.props.model));
-				}}
-				className="tray-item"
-			>
-				{this.props.name}
-			</S.Tray>
+				<S.Tray
+					color={this.props.color}
+					draggable={true}
+					onDragStart={(event) => {
+						event.dataTransfer.setData('storm-diagram-node', JSON.stringify(this.props.model));
+					}}
+					className="tray-item"
+				>
+					{this.props.children}
+					{this.props.name}
+				</S.Tray>
 		);
 	}
 }

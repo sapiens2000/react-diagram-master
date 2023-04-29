@@ -15,6 +15,7 @@ export interface SaveNodeWidgetProps {
 
 const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
+    const [curType, setCurType] = useState('');
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -32,7 +33,7 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                     <EastIcon fontSize="large"/>
                 </Container>    
             </S.Widget>
-            {onModal && <SaveModal dataSet={null} setOnModal={setOnModal}/>}
+            {onModal && <SaveModal dataSet={null} setOnModal={setOnModal} curType={curType} setCurType={setCurType}/>}
         </div>
     );
 }
