@@ -6,6 +6,7 @@ import {Container} from "@mui/material";
 import SaveModal from "../modal/SaveModal";
 import * as S from "../../adstyled";
 import EastIcon from '@mui/icons-material/East';
+import { GridRowsProp } from "@mui/x-data-grid";
 
 
 export interface SaveNodeWidgetProps {
@@ -13,9 +14,42 @@ export interface SaveNodeWidgetProps {
     engine: DiagramEngine;
 }
 
+const rows: GridRowsProp = [
+    {
+      id: 1,
+      tableFieldName: 'LOG_DATE',
+      type: '',
+      mappingField: '',
+      defaultValue: '',
+    },
+    {
+        id: 2,
+        tableFieldName: 'LOG_TIME',
+        type: '',
+        mappingField: '',
+        defaultValue: '',
+    },
+    {
+        id: 3,
+        tableFieldName: 'LOG_USER_ID',
+        type: '',
+        mappingField: '',
+        defaultValue: '',
+    },
+    {
+        id: 4,
+        tableFieldName: 'LOG_PAY_ACC',
+        type: '',
+        mappingField: '',
+        defaultValue: '',
+      }
+  ];
+  
 const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
     const [curType, setCurType] = useState('');
+    const [curRows, setCurRows] = useState(rows);
+    const [curAttr, setCurAttr] = useState(node.prog_work_Flow);
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -33,7 +67,16 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                     <EastIcon fontSize="large"/>
                 </Container>    
             </S.Widget>
-            {onModal && <SaveModal dataSet={null} setOnModal={setOnModal} curType={curType} setCurType={setCurType}/>}
+            {onModal && <SaveModal dataSet={null}
+            prog_work_Flow_mng={node.prog_work_Flow}
+            setOnModal={setOnModal}
+            curType={curType}
+            setCurType={setCurType}
+            setCurRows={setCurRows} 
+            curRows={curRows}
+            curAttr={curAttr}
+            setCurAttr={setCurAttr}
+            />}
         </div>
     );
 }

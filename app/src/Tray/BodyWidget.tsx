@@ -18,6 +18,7 @@ import saveAs from 'file-saver';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SelectNode from '../components/node/SelectNode';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -157,7 +158,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-								var node: DefaultNodeModel | SqlNodeModel | SaveNodeModel = null;
+								var node: FilterNode | SqlNodeModel | SaveNodeModel | SelectNode = null;
 								if (data.type === 'sql'){
 									node = new SqlNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'save'){

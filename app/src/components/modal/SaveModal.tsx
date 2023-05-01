@@ -8,6 +8,7 @@ import {
     GridColDef, 
     GridRowsProp,
 } from '@mui/x-data-grid';
+import EditableDataGrid from "./Datagrid";
 
 export const Modal = styled.div`
     box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
@@ -27,53 +28,22 @@ export const ButtonBox = styled.div`
     margin-top: 15px;
 `;
 
-
 const options = ['INSERT', 'CSV'];
 
 export interface SaveModalProps {
     dataSet: any;
-    setOnModal: (state: boolean) => void;
     curType: string;
+    curRows: any;
+    curAttr: any;
+    prog_work_Flow_mng: any;
+    setOnModal: (state: boolean) => void;
     setCurType: (type: string) => void;
+    setCurRows: (data: any) => void;
+    setCurAttr: (data: any) => void;
 }
 
-const columns: GridColDef[] = [
-    { 
-      field: 'tableFieldName', 
-      headerName: '테이블 필드명', 
-      width: 220, 
-      editable: false 
-    },
-    { 
-      field: 'type', 
-      headerName: '유형', 
-      editable: true 
-    },
-    {
-      field: 'mappingField',
-      headerName: '매핑 필드',
-      width: 220,
-      editable: true,
-    },
-    {
-      field: 'defaultValue',
-      headerName: '기본값',
-      width: 200,
-      editable: true,
-    },
-  ];
-
-
-const rows: GridRowsProp = [
-    {
-      id: 1,
-      tableFieldName: '테스트필드',
-      type: '테스트',
-      mappingField: '테스트필드',
-      defaultValue: '테스트',
-    }
-  ];
-  
+// hard codded  
+const fields = ["LOG_DATE", "LOG_TIME", "LOG_USER_ID", "LOG_PAY_ACC"];
 const filter_test_data = [
     {
     "LOG_DATE": "2023-04-25",
@@ -91,36 +61,37 @@ const filter_test_data = [
 
 const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     const [tables, setTables] = useState(['']);
-    const fields = ["LOG_DATE", "LOG_TIME", "LOG_USER_ID", "LOG_PAY_ACC"];
 
-    const handleSaveChanges = () => {
-        console.log(props.curType);
-        props.setOnModal(false);
-    }
+    const handleSave = () => {
+        var updatedProgWorkFlow = null;
 
-    const handleEditCellChange = (params: any) => {
-        const updatedRows = [...rows];
-        updatedRows[params.id] = {
-        ...updatedRows[params.id],
-        [params.field]: params.value,
-        };
-        // console.log(updatedRows)
-    }
+        props.curRows.forEach((row: any) => {
+            var newProperties: string[] = [];
+            var tableFieldName = row["tableFieldName"];
+
+            for (const key in row) {
+                newProperties.push(row[key]);
+            }
+
+            const updatedFlowAttr = { ...props.prog_work_Flow_mng.flow_attr, [tableFieldName] : newProperties};
+
+            updatedProgWorkFlow = { ...props.prog_work_Flow_mng, flow_attr: updatedFlowAttr };
+            console.log(updatedProgWorkFlow)
+            props.setCurAttr(updatedProgWorkFlow)
+        });
+             
+        alert("save");
+    };
 
     const handleType = (event: React.ChangeEvent, value: string) => {
-
         switch(props.curType){
             case 'INSERT':
+                props.setCurType('insert');
                 console.log('insert');
                 break;
-            case 'SAVE':
-                console.log('save');
-                break;
-            case 'UPDATE':
-                console.log('update');
-                break;
-            case 'DELETE':
-                console.log('delete');
+            case 'CSV':
+                props.setCurType('csv');
+                console.log('csv');
                 break;
         }
     };
@@ -194,41 +165,8 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     width: '100%' ,
                     marginTop: '10px'
                 }}>
-                    <DataGrid 
-                    rows={rows} 
-                    columns={columns} 
-                    onCellEditStop={handleEditCellChange}
-                    />
+                    <EditableDataGrid rows={props.curRows} setCurRows={props.setCurRows}/>
                 </div>
-                {/* <TableContainer
-                component={Paper}
-                style={{ maxHeight: "267px", overflow: "auto", marginTop: "16px" }}
-                >
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>테이블 필드명</TableCell>
-                                <TableCell>조건</TableCell>
-                                <TableCell>필터값</TableCell>
-                                <TableCell>메모</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {fields.map((field, index) => (
-                                <TableRow
-                                    key={field}
-                                    onClick={() => {
-                                        //setSelectedField(field);                                        
-                                        //handleRowClick(index);
-                                    }}
-                                >
-                                    <TableCell>{field}<
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer> */}
-
                 <ButtonBox style={{ 
                     marginTop: '10px', 
                     overflow: 'hidden'
@@ -242,7 +180,7 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
                     style={{
                         float: 'right'
                     }}
-                    onClick={handleSaveChanges} variant="contained">저장</Button>
+                    onClick={handleSave} variant="contained">저장</Button>
                 </ButtonBox>
             </Container>
         </Modal>

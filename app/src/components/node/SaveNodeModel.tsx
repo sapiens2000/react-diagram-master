@@ -13,26 +13,18 @@ export class SaveNode extends NodeModel<NodeModelGenerics> {
 
     inPort = new DefaultPortModel(true, "in");
 
-    onlineTransIsol = {
-        idx : 0,
-        acct_desc : '',
-        acct_type : '',
-        balance : 0,
-        device_info : '',
-        hhmissff : '',
-        in_pay_acc : '',
-        in_pay_bcd : '',
-        in_pay_name : '',
-        inpt_dttm : '',
-        out_pay_acc : '',
-        out_pay_bcd : '',
-        out_pay_name : '',
-        tot_amt : 0,
-        user_id : '',
-        user_no : 0,
-        user_type : '',
-        yyyymmdd : ''
-    }    
+    prog_work_Flow = {
+        flow_id : 0,
+        //tmp
+        prog_id : 19,
+        flow_seq : 0,
+        flow_type : "",
+        flow_attr : {
+        },
+        flow_desc : "",
+        crtd_dttm : "",
+        updt_dttm : "",
+    }   
 
     constructor(readonly engine: CanvasEngine) {
         super({ type: "save" });
