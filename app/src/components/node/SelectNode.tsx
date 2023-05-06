@@ -1,4 +1,4 @@
-import { CanvasEngine } from "@projectstorm/react-canvas-core";
+import { CanvasEngine, DeserializeEvent } from "@projectstorm/react-canvas-core";
 import {
     DefaultPortModel,
     NodeModel,
@@ -61,12 +61,12 @@ export class SelectNode extends NodeModel<NodeModelGenerics>{
         this.engine.repaintCanvas();
     }
 
-    serialize() {
-        // console.log(this.s_value)
-        return {
-            ...super.serialize(),
-            value: this.dataSet.value
-        };
+    serialize(): any {
+        super.serialize()
+    }
+
+    deserialize(event: DeserializeEvent<this>): void {
+        super.deserialize(event);
     }
 }
 

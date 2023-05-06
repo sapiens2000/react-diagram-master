@@ -53,9 +53,6 @@ export class SaveNode extends NodeModel<NodeModelGenerics> {
         this.dataSet.value = [...value];
     }
 
-    refresh() {
-        this.getNumber(this.inPort);
-    }
 }
 
 export default SaveNode;

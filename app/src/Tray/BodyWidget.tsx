@@ -98,7 +98,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	}
 
 	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// only choose 1st file
+		// 1st file
 		const file = e.target.files?.[0];
 		if (file) {
 			const reader = new FileReader();
@@ -119,8 +119,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 					<TrayWidget>
 						<div>
 							<TrayItemWidget model={{ type: 'sql' }} name="Sql Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
 							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
 						</div>
 					</TrayWidget>
 					<S.Content2>
