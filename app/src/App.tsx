@@ -1,11 +1,9 @@
 import './App.css';
 import createEngine, * as SRD from '@projectstorm/react-diagrams';
-import { DefaultNodeFactory } from './components/node/DefaultNodeFactory';
 import { ArrowLinkFactory } from './components/link/ArrowLinkFactory'
 import SelectNodeFactory from './components/node/SelectNodeFactory';
-import SaveNodeFactory from './components/node/SaveNodeFactory';
 import FilterNodeFactory from './components/node/FilterNodeFactory';
-import SqlNodeFactory from './components/node/SqlNodeFactory';
+import OutputNodeFactory from './components/node/OutputNodeFactory';
 
 export default class App {
   protected activeModel: SRD.DiagramModel;
@@ -20,10 +18,8 @@ export default class App {
   public newModel(){
     this.engine.setModel(this.activeModel);
     
-    this.engine.getNodeFactories().registerFactory(new DefaultNodeFactory());
     this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
-    this.engine.getNodeFactories().registerFactory(new SqlNodeFactory());
-    this.engine.getNodeFactories().registerFactory(new SaveNodeFactory());
+    this.engine.getNodeFactories().registerFactory(new OutputNodeFactory());
     this.engine.getNodeFactories().registerFactory(new FilterNodeFactory());
     this.engine.getNodeFactories().registerFactory(new SelectNodeFactory());
 

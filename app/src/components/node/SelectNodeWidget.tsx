@@ -1,18 +1,18 @@
 import React, {FC, useRef, useState, useEffect} from "react";
 import { DiagramEngine } from "@projectstorm/react-diagrams";
-import {SelectNode} from "./SelectNode";
+import {Container, IconButton} from "@mui/material";
 
-import {Container, IconButton, Typography} from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ModalPortal from "../modal/ModalPortal";
 import SelectModal2 from "../modal/SelectModal2";
+import StorageIcon from '@mui/icons-material/Storage';
 
 import * as S from "../../adstyled";
 import "../../styles.css";
 import axios from "axios";
+import SelectNodeModel from "./SelectNodeModel";
 
 export interface SelectNodeWidgetAdvancedProps {
-    node: SelectNode;
+    node: SelectNodeModel;
     engine: DiagramEngine;
 }
 
@@ -57,8 +57,7 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
                     style={{ right: -4, top: "50%" }}
                 />
                 <Container>
-                    <Typography>SELECT</Typography>
-                    <IconButton onClick={handleOpen}><SettingsIcon /></IconButton>
+                    <IconButton onClick={handleOpen}><StorageIcon fontSize="large"/></IconButton>
                     {modalOpened && (
                         <ModalPortal closePortal={handleClose} flag={"select"}>
                             <SelectModal2 prog_work_Flow_mng={node.prog_work_Flow_mng}/>

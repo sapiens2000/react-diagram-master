@@ -3,12 +3,10 @@ import * as _ from 'lodash';
 import { TrayWidget } from './TrayWidget';
 import { TrayItemWidget } from './TrayItemWidget';
 import styled from '@emotion/styled';
-import { DefaultNodeModel } from '../components/node/DefaultNodeModel';
 import { CanvasWidget } from '@projectstorm/react-diagrams';
 import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
-import SqlNodeModel from '../components/node/SqlNodeModel';
-import SaveNodeModel from '../components/node/SaveNodeModel';
+import OutputNodeModel from '../components/node/OutputNodeModel';
 import FilterNode from '../components/node/FilterNode';
 import { IconButton } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -18,7 +16,7 @@ import saveAs from 'file-saver';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SelectNode from '../components/node/SelectNode';
+import SelectNodeModel from '../components/node/SelectNodeModel';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -118,9 +116,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				<S.Content>
 					<TrayWidget>
 						<div>
-							<TrayItemWidget model={{ type: 'sql' }} name="Sql Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'save' }} name="Save Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
 							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
 						</div>
 					</TrayWidget>
 					<S.Content2>
@@ -158,11 +156,11 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-								var node: FilterNode | SqlNodeModel | SaveNodeModel | SelectNode = null;
-								if (data.type === 'sql'){
-									node = new SqlNodeModel(this.props.app.getDiagramEngine());
-								} else if (data.type === 'save'){
-									node = new SaveNodeModel(this.props.app.getDiagramEngine());
+								var node: FilterNode | SelectNodeModel | OutputNodeModel = null;
+								if (data.type === 'select'){
+									node = new SelectNodeModel(this.props.app.getDiagramEngine());
+								} else if (data.type === 'output'){
+									node = new OutputNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'filter'){
 									node = new FilterNode(this.props.app.getDiagramEngine());
 								}

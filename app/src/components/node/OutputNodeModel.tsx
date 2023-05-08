@@ -27,7 +27,7 @@ export class SaveNode extends NodeModel<NodeModelGenerics> {
     }   
 
     constructor(readonly engine: CanvasEngine) {
-        super({ type: "save" });
+        super({ type: "output" });
         this.addPort(this.inPort);
         this.inPort.setMaximumLinks(1);
     }

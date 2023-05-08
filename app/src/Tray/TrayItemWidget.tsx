@@ -17,7 +17,7 @@ namespace S {
 		border-radius: 5px;
 		margin-bottom: 2px;
 		cursor: pointer;
-		width: 35%;
+		width: 40%;
 		display: flex;
 	`;
 }

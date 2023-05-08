@@ -5,7 +5,7 @@ import {SqlNodeModel} from "./SqlNodeModel";
 import {Container} from "@mui/material";
 import StorageIcon from '@mui/icons-material/Storage';
 import * as S from "../../adstyled";
-import SqlModal from "../modal/SqlModal";
+import SelectModal2 from "../modal/SelectModal2";
 
 
 
@@ -22,8 +22,13 @@ const SqlNodeWidget : FC<SqlNodeWidgetAdvancedProps> = ({engine, node}) => {
         setOnModal(true);
     }   
 
+    const handleContextMenu = (event: any) => {
+        event.preventDefault();
+        alert('context');
+    }
+
     return (
-        <div className="select" onDoubleClick={handleModalOpen}>
+        <div className="select" onDoubleClick={handleModalOpen} onContextMenu={handleContextMenu}>
             <S.Widget>
                 <S.OutPort
                     port={node.outPort}
@@ -34,8 +39,10 @@ const SqlNodeWidget : FC<SqlNodeWidgetAdvancedProps> = ({engine, node}) => {
                     <StorageIcon fontSize="large"/>
                 </Container>
             </S.Widget>
-            {onModal && <SqlModal setSql={setSql} setOnModal={setOnModal}/>}
+            {onModal && <SelectModal2 prog_work_Flow_mng={node.prog_work_Flow_mng}/>}
+            
         </div>
+        
     );
 };
 

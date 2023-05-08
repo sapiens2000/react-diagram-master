@@ -6,7 +6,7 @@ import SqlNodeWidget from "./SqlNodeWidget";
 
 class SqlNodeFactory extends AbstractReactFactory<SqlNodeModel,DiagramEngine> {
     constructor() {
-        super("sql");
+        super("select");
     }
 
     generateReactWidget(event: any) {

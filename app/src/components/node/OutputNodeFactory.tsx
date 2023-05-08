@@ -1,15 +1,15 @@
 import * as React from "react";
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
 import { DiagramEngine } from "@projectstorm/react-diagrams-core";
-import {SaveNode} from "./SaveNodeModel";
-import SaveNodeWidget from "./SaveNodeWidget";
+import {SaveNode} from "./OutputNodeModel";
+import SaveNodeWidget from "./OutputNodeWidget";
 
 class SaveNodeFactory extends AbstractReactFactory<
     SaveNode,
     DiagramEngine
     > {
     constructor() {
-        super("save");
+        super("output");
     }
 
     generateReactWidget(event: any) {

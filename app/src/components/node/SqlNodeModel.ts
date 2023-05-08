@@ -35,6 +35,22 @@ export class SqlNodeModel extends NodeModel<NodeModelGenerics>{
         yyyymmdd : ''
     }
 
+    prog_work_Flow_mng = {
+        flow_id : 0,
+        prog_id : 0,
+        flow_seq : 0,
+        flow_type : "",
+        flow_attr : {
+            sql : '',
+            column_info : [''],
+            db_info : 'PostgreSQL',
+            output : [-1],
+        },
+        flow_desc : "",
+        crtd_dttm : "",
+        updt_dttm : "",
+    }
+    
     outPort = new ArrowPortModel(false, "out");
 
     constructor(readonly engine: CanvasEngine) {
@@ -45,6 +61,7 @@ export class SqlNodeModel extends NodeModel<NodeModelGenerics>{
     setValue(value: string[]) {
         this.dataSet.value = [...value];
         this.engine.repaintCanvas();
+        
     }
 
     serialize() {

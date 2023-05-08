@@ -1,6 +1,6 @@
 import React, {FC, useState} from "react";
 import { DiagramEngine } from "@projectstorm/react-diagrams";
-import {SaveNode} from "./SaveNodeModel";
+import {SaveNode} from "./OutputNodeModel";
 
 import {Container} from "@mui/material";
 import SaveModal from "../modal/SaveModal";
@@ -56,7 +56,7 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
     }   
 
     return (
-        <div className="save" onDoubleClick={handleModalOpen}>
+        <div className="output" onDoubleClick={handleModalOpen}>
             <S.Widget>
                 <S.InPort
                     port={node.inPort}

@@ -3,12 +3,11 @@ import { DiagramEngine } from "@projectstorm/react-diagrams";
 import {FilterNode} from "./FilterNode";
 
 import {Container, Button, IconButton, Typography} from "@mui/material";
-import SettingsIcon from '@mui/icons-material/Settings';
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ModalPortal from "../modal/ModalPortal";
-import FilterModal from "../modal/FilterModal";
 import * as S from "../../adstyled";
 import "../../styles.css";
+import FilterModal2 from "../modal/FilterModal2";
 
 export interface FilterNodeWidgetProps {
     node: FilterNode;
@@ -43,11 +42,10 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
                     style={{ left: -4, top: "50%" }}
                 />
                 <Container>
-                    <Typography>FILTER</Typography>
-                    <IconButton onClick={handleOpen}><SettingsIcon /></IconButton>
+                    <IconButton onClick={handleOpen}><FilterAltIcon fontSize='large'/></IconButton>
                     {modalOpened && (
                         <ModalPortal closePortal={handleClose} flag={"filter"}>
-                            <FilterModal dataSet={node.dataSet}/>
+                            <FilterModal2 dataSet={node.dataSet}/>
                         </ModalPortal>
                     )}
                 </Container>

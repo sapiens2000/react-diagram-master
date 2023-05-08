@@ -7,11 +7,13 @@ const useStyles = makeStyles({
     container: {
         backgroundColor: '#000',
         padding: '1rem',
-        width: '410px',
+        width: '350px',
         height: '450px',
         display: 'flex',
         flexDirection: 'column',
-        position: 'relative'
+        position: 'relative',      
+        borderRadius: '12px',
+        
     },
     textarea: {
         backgroundColor: '#000',
@@ -19,9 +21,10 @@ const useStyles = makeStyles({
         border: '1px solid #ff0',
         resize: 'none',
         marginBottom: '1rem',
+        position: 'relative'
     },
     saveButton: {
-        position: 'absolute',
+        position: 'relative',
         bottom: '1rem',
         right: '1.8rem',
     }
@@ -35,7 +38,7 @@ const SelectModal2 = ({prog_work_Flow_mng}) => {
         alert("save");
         prog_work_Flow_mng.flow_attr.sql = attr
         // flow_attr.sql = attr
-        // prog_work_Flow_mng.flow_attr.column_info = getColumnInfo(attr);
+        //prog_work_Flow_mng.flow_attr.column_info =getColumnInfo(attr);
         // flow_attr.column_info = getColumnInfo(attr);
         console.log("submit");
     };
@@ -52,6 +55,7 @@ const SelectModal2 = ({prog_work_Flow_mng}) => {
                         onChange={(e) => setAttr(e.target.value)}
                         rowsMin={5}
                         placeholder="여기에 입력하세요."
+                        spellCheck="false"
                     />
                 </Box>
                 <br/>

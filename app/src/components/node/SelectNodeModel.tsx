@@ -5,7 +5,7 @@ import {
     NodeModelGenerics,
 } from "@projectstorm/react-diagrams";
 
-export class SelectNode extends NodeModel<NodeModelGenerics>{
+export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
     dataSet = {
         table : '',
         column : '',
@@ -52,7 +52,7 @@ export class SelectNode extends NodeModel<NodeModelGenerics>{
     outPort = new DefaultPortModel(false, "out");
 
     constructor(readonly engine: CanvasEngine) {
-        super({ type: "select-node" });
+        super({ type: "select" });
         this.addPort(this.outPort);
     }
 
@@ -70,4 +70,4 @@ export class SelectNode extends NodeModel<NodeModelGenerics>{
     }
 }
 
-export default SelectNode;
+export default SelectNodeModel;
