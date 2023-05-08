@@ -12,7 +12,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-      <Main/>
+      {/* <Main/> */}
+      <BodyWidget app={new App()}/>
   </React.StrictMode>
 );
 

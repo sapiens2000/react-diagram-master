@@ -7,7 +7,9 @@ import SaveModal from "../modal/SaveModal";
 import * as S from "../../adstyled";
 import EastIcon from '@mui/icons-material/East';
 import { GridRowsProp } from "@mui/x-data-grid";
-
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { DeleteItemsAction } from "@projectstorm/react-diagrams";
 
 export interface SaveNodeWidgetProps {
     node: SaveNode;
@@ -45,18 +47,65 @@ const rows: GridRowsProp = [
       }
   ];
   
+
+
 const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
+    const [contextMenu, setContextMenu] = React.useState<{
+        mouseX: number;
+        mouseY: number;
+      } | null>(null);
     const [curType, setCurType] = useState('');
     const [curRows, setCurRows] = useState(rows);
     const [curAttr, setCurAttr] = useState(node.prog_work_Flow);
+
 
     const handleModalOpen = () => {
         setOnModal(true);
     }   
 
+    const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setContextMenu(
+            contextMenu === null
+              ? {
+                  mouseX: event.clientX + 2,
+                  mouseY: event.clientY - 6,
+                }
+              : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+                // Other native context menus might behave different.
+                // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+                null,
+          );
+        };
+
+    const handleClose = () => {
+        setContextMenu(null)
+    }
+    
+    const renderModal = () => {
+        return (
+          <SaveModal
+            dataSet={null}
+            prog_work_Flow_mng={node.prog_work_Flow}
+            setOnModal={setOnModal}
+            curType={curType}
+            setCurType={setCurType}
+            setCurRows={setCurRows}
+            curRows={curRows}
+            curAttr={curAttr}
+            setCurAttr={setCurAttr}
+          />
+        );
+      };
+
+    const handleDelete = () => {
+        node.setSelected(true);
+        node.setSelected(false);
+    }
+
     return (
-        <div className="output" onDoubleClick={handleModalOpen}>
+        <div className="output" onDoubleClick={handleModalOpen} onContextMenu={handleContextMenu}>
             <S.Widget>
                 <S.InPort
                     port={node.inPort}
@@ -67,16 +116,20 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                     <EastIcon fontSize="large"/>
                 </Container>    
             </S.Widget>
-            {onModal && <SaveModal dataSet={null}
-            prog_work_Flow_mng={node.prog_work_Flow}
-            setOnModal={setOnModal}
-            curType={curType}
-            setCurType={setCurType}
-            setCurRows={setCurRows} 
-            curRows={curRows}
-            curAttr={curAttr}
-            setCurAttr={setCurAttr}
-            />}
+            {onModal && renderModal()}
+            <Menu
+                open={contextMenu !== null}
+                onClose={handleClose}
+                anchorReference="anchorPosition"
+                anchorPosition={
+                  contextMenu !== null
+                    ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+                    : undefined
+                }
+              >
+                <MenuItem onClick={handleDelete}>삭제</MenuItem>
+                <MenuItem onClick={handleClose}>복사</MenuItem>
+            </Menu>
         </div>
     );
 }

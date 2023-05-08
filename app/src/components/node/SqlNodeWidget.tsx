@@ -22,13 +22,10 @@ const SqlNodeWidget : FC<SqlNodeWidgetAdvancedProps> = ({engine, node}) => {
         setOnModal(true);
     }   
 
-    const handleContextMenu = (event: any) => {
-        event.preventDefault();
-        alert('context');
-    }
+
 
     return (
-        <div className="select" onDoubleClick={handleModalOpen} onContextMenu={handleContextMenu}>
+        <div className="select" onDoubleClick={handleModalOpen}>
             <S.Widget>
                 <S.OutPort
                     port={node.outPort}
