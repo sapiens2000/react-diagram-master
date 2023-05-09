@@ -1,5 +1,5 @@
 import React, {FC, useState} from "react";
-import { DiagramEngine } from "@projectstorm/react-diagrams";
+import { BaseModel, DiagramEngine } from "@projectstorm/react-diagrams";
 import {SaveNode} from "./OutputNodeModel";
 
 import {Container} from "@mui/material";
@@ -9,7 +9,6 @@ import EastIcon from '@mui/icons-material/East';
 import { GridRowsProp } from "@mui/x-data-grid";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { DeleteItemsAction } from "@projectstorm/react-diagrams";
 
 export interface SaveNodeWidgetProps {
     node: SaveNode;
@@ -100,8 +99,34 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
       };
 
     const handleDelete = () => {
-        node.setSelected(true);
-        node.setSelected(false);
+      node.setSelected(true);
+      engine.getActionEventBus()
+
+      node.setSelected(false);
+      setContextMenu(null);
+    }
+
+    const handleCopy = () => {
+      // need connection with db
+      node.setSelected(true);
+      let offset = { x: 100, y: 100 };
+      let model = engine.getModel()
+
+      let target = model.getSelectedEntities()
+
+      if(target.length > 0){
+        let newNode = target[0].clone()
+
+
+        newNode.setPosition(newNode.getX() + offset.x, newNode.getY() + offset.y);
+        model.addNode(newNode);
+        (newNode as BaseModel).setSelected(false);
+
+      }
+      node.setSelected(false);
+      setContextMenu(null);
+
+      engine.repaintCanvas();
     }
 
     return (
@@ -128,7 +153,7 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
                 }
               >
                 <MenuItem onClick={handleDelete}>삭제</MenuItem>
-                <MenuItem onClick={handleClose}>복사</MenuItem>
+                <MenuItem onClick={handleCopy}>복사</MenuItem>
             </Menu>
         </div>
     );

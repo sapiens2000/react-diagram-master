@@ -19,6 +19,8 @@ class SaveNodeFactory extends AbstractReactFactory<
     generateModel(event: any) {
         return new SaveNode(this.engine);
     }
+
+    
 }
 
 export default SaveNodeFactory;
