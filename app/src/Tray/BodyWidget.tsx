@@ -16,7 +16,7 @@ import saveAs from 'file-saver';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SelectNodeModel from '../components/node/SelectNodeModel';
+import SelectNodeModel from '../components/node/SelectNode';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -80,14 +80,14 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	handlePlay = () => {
 		console.log('play project')
 	}
-	
+
 	handleSaveProject = () => {
 		let project_json = this.props.app.getDiagramEngine().getModel().serialize();
 		// let allEntities = this.props.app.getDiagramEngine().getModel().getSelectionEntities();
 		// if (allEntities.length > 0){
 		// 	_.forEach(allEntities, (node) => {
 		// 		project_json.push(node.serialize());
-		// 	})    
+		// 	})
 		// }
 		console.log(project_json);
 		console.log('save project')
@@ -107,7 +107,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			  }
 			};
 			reader.readAsText(file);
-		}	
+		}
 	}
 
 	render() {
@@ -118,7 +118,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						<div>
 							<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
 							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>							
+							<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
 						</div>
 					</TrayWidget>
 					<S.Content2>
@@ -175,7 +175,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						>
 							<WorkCanvasWidget>
 								<CanvasWidget engine={this.props.app.getDiagramEngine()} />
-							</WorkCanvasWidget>							
+							</WorkCanvasWidget>
 						</S.Layer>
 					</S.Content2>
 				</S.Content>

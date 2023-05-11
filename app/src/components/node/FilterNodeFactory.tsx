@@ -9,7 +9,7 @@ class FilterNodeFactory extends AbstractReactFactory<
     DiagramEngine
     > {
     constructor() {
-        super("filter");
+        super("filter-node");
     }
 
     generateReactWidget(event: any) {
