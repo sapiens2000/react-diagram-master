@@ -103,7 +103,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     }
 
     const handleCopy = () => {
-      // need connection with db
+      // need connection with db and copy data set
       node.setSelected(true);
       let offset = { x: 100, y: 100 };
       let model = engine.getModel()
@@ -112,7 +112,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 
       if(target.length > 0){
         let newNode = target[0].clone()
-
 
         newNode.setPosition(newNode.getX() + offset.x, newNode.getY() + offset.y);
         model.addNode(newNode);

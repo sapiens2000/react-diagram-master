@@ -4,6 +4,7 @@ import { ArrowLinkFactory } from './components/link/ArrowLinkFactory'
 import SelectNodeFactory from './components/node/SelectNodeFactory';
 import FilterNodeFactory from './components/node/FilterNodeFactory';
 import OutputNodeFactory from './components/node/OutputNodeFactory';
+import { SelectionBoxLayerFactory } from '@projectstorm/react-diagrams';
 
 export default class App {
   protected activeModel: SRD.DiagramModel;
@@ -22,13 +23,19 @@ export default class App {
     this.engine.getNodeFactories().registerFactory(new OutputNodeFactory());
     this.engine.getNodeFactories().registerFactory(new FilterNodeFactory());
     this.engine.getNodeFactories().registerFactory(new SelectNodeFactory());
+    this.engine.getLayerFactories().registerFactory(new SelectionBoxLayerFactory());
 
+    console.log(this.engine.getLayerFactories())
     const model = new SRD.DiagramModel()
     
     model.registerListener({
       linksUpdated: (event: any) => {
-          console.log(event.link.sourcePort.parent.dataSet)
-        }
+        event.link.registerListener({
+          targetPortChanged: (event: any) => {
+              console.log(event.port.parent);
+          }
+        })
+      }
     });
 
     this.engine.setModel(model);
@@ -43,31 +50,3 @@ export default class App {
 		return this.engine;
 	}
 }
-
-// contextaction
-// import * as React from 'react';
-// import * as _ from 'lodash';
-// import {  DefaultNodeModel } from './components/node/DefaultNodeModel';
-// import { Action, ActionEvent, InputType } from '@projectstorm/react-canvas-core';
-
-
-// export default class ContextAction extends Action {
-// 	constructor(){
-// 		super({
-// 			type: InputType.MOUSE_DOWN,
-// 			fire: (event: ActionEvent<React.MouseEvent<Element, MouseEvent>>) => {
-// 				const selectedEntities = this.engine.getModel().getSelectedEntities();
-// 				if (selectedEntities.length === 1){
-// 					if (event.event.button == 2) {		
-// 						event.event.preventDefault();
-// 						selectedEntities.forEach(model => {
-// 							if (model instanceof DefaultNodeModel){					
-// 								event.event.preventDefault();
-// 							}
-// 						})
-// 					}
-// 				}
-// 			}
-// 		});
-// 	}
-// }
