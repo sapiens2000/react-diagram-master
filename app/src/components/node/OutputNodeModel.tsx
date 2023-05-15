@@ -6,7 +6,7 @@ import {
 } from "@projectstorm/react-diagrams";
 import {FilterNode} from "./FilterNode";
 
-export class SaveNode extends NodeModel<NodeModelGenerics> {
+export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     dataSet = {
         value : ['']
     }
@@ -55,4 +55,4 @@ export class SaveNode extends NodeModel<NodeModelGenerics> {
 
 }
 
-export default SaveNode;
+export default OutputNodeModel;

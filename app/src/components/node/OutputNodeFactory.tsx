@@ -1,11 +1,11 @@
 import * as React from "react";
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
 import { DiagramEngine } from "@projectstorm/react-diagrams-core";
-import {SaveNode} from "./OutputNodeModel";
-import SaveNodeWidget from "./OutputNodeWidget";
+import {OutputNodeModel} from "./OutputNodeModel";
+import OutputNodeWidget from "./OutputNodeWidget";
 
-class SaveNodeFactory extends AbstractReactFactory<
-    SaveNode,
+class OutputNodeFactory extends AbstractReactFactory<
+    OutputNodeModel,
     DiagramEngine
     > {
     constructor() {
@@ -13,14 +13,14 @@ class SaveNodeFactory extends AbstractReactFactory<
     }
 
     generateReactWidget(event: any) {
-        return <SaveNodeWidget node={event.model} engine={this.engine} />;
+        return <OutputNodeWidget node={event.model} engine={this.engine} />;
     }
 
     generateModel(event: any) {
-        return new SaveNode(this.engine);
+        return new OutputNodeModel(this.engine);
     }
 
     
 }
 
-export default SaveNodeFactory;
+export default OutputNodeFactory;

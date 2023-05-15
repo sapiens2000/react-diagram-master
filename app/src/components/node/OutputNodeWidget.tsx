@@ -1,17 +1,16 @@
 import React, {FC, useState} from "react";
 import { BaseModel, DiagramEngine } from "@projectstorm/react-diagrams";
-import {SaveNode} from "./OutputNodeModel";
-
+import {OutputNodeModel} from "./OutputNodeModel";
 import {Container} from "@mui/material";
-import SaveModal from "../modal/SaveModal";
+import OutputModal from "../modal/OutputModal";
 import * as S from "../../adstyled";
 import EastIcon from '@mui/icons-material/East';
 import { GridRowsProp } from "@mui/x-data-grid";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-export interface SaveNodeWidgetProps {
-    node: SaveNode;
+export interface OutputNodeWidgetProps {
+    node: OutputNodeModel;
     engine: DiagramEngine;
 }
 
@@ -48,7 +47,7 @@ const rows: GridRowsProp = [
   
 
 
-const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
+const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
     const [contextMenu, setContextMenu] = React.useState<{
         mouseX: number;
@@ -84,7 +83,7 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
     
     const renderModal = () => {
         return (
-          <SaveModal
+          <OutputModal
             dataSet={null}
             prog_work_Flow_mng={node.prog_work_Flow}
             setOnModal={setOnModal}
@@ -100,7 +99,7 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
 
     const handleDelete = () => {
       node.setSelected(true);
-      engine.getActionEventBus()
+      console.log(engine.getActionEventBus())
 
       node.setSelected(false);
       setContextMenu(null);
@@ -125,7 +124,19 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
       }
       node.setSelected(false);
       setContextMenu(null);
+      
+      console.log('copy')
+      engine.repaintCanvas();
+    }
 
+    const handleLock = () => {
+      if(node.isLocked() == true)
+        node.setLocked(true)
+      else
+        node.setLocked(false)
+
+      console.log('set lock')
+      setContextMenu(null);
       engine.repaintCanvas();
     }
 
@@ -154,9 +165,10 @@ const SaveNodeWidget : FC<SaveNodeWidgetProps> = ({engine, node}) => {
               >
                 <MenuItem onClick={handleDelete}>삭제</MenuItem>
                 <MenuItem onClick={handleCopy}>복사</MenuItem>
+                <MenuItem onClick={handleLock}>잠금</MenuItem>
             </Menu>
         </div>
     );
 }
 
-export default SaveNodeWidget;
+export default OutputNodeWidget;

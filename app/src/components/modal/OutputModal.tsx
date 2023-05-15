@@ -31,7 +31,7 @@ export const ButtonBox = styled.div`
 
 const options = ['INSERT', 'CSV'];
 
-export interface SaveModalProps {
+export interface OutputModalProps {
     dataSet: any;
     curType: string;
     curRows: any;
@@ -60,7 +60,7 @@ const filter_test_data = [
     }
   ];
 
-const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
+const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
     const [tables, setTables] = useState(['']);
 
     const handleSave = () => {
@@ -189,4 +189,4 @@ const SaveModal: React.FC<SaveModalProps> = (props: SaveModalProps) => {
     );
 };
 
-export default SaveModal;
+export default OutputModal;

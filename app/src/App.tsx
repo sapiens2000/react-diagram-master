@@ -27,12 +27,8 @@ export default class App {
     
     model.registerListener({
       linksUpdated: (event: any) => {
-        event.link.registerListener({
-          targetPortChanged: (event: any) => {
-            console.log(event.link);
-          }
-        });
-      }
+          console.log(event.link.sourcePort.parent)
+        }
     });
 
     this.engine.setModel(model);
