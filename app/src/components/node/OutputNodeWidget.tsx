@@ -98,11 +98,8 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       };
 
     const handleDelete = () => {
-      node.setSelected(true);
-      console.log(engine.getActionEventBus())
-
-      node.setSelected(false);
-      setContextMenu(null);
+      node.remove();
+      engine.repaintCanvas();
     }
 
     const handleCopy = () => {

@@ -27,7 +27,7 @@ export default class App {
     
     model.registerListener({
       linksUpdated: (event: any) => {
-          console.log(event.link.sourcePort.parent)
+          console.log(event.link.sourcePort.parent.dataSet)
         }
     });
 
