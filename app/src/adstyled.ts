@@ -11,7 +11,7 @@ export const Widget = styled.div`
   position: relative;
   box-sizing: border-box;
   display: flex;
-  text-align: center;  
+  text-align: center;
   align-items: center;
   justify-content: space-between;
 `;

@@ -18,9 +18,13 @@ const ModalPortal = ({ children, closePortal, flag }) => {
             ref.current = dom;
         }
         else if (document && flag == "save") {
-            const dom = document.getElementById("save-modal");
-            ref.current = dom;
-        }
+					const dom = document.getElementById("save-modal");
+					ref.current = dom;
+				}
+				else if (document && flag == "memo") {
+					const dom = document.getElementById("memo-modal");
+					ref.current = dom;
+				}
         return () => {
             setMounted(false);
         };
