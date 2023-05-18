@@ -1,10 +1,14 @@
 import { CanvasEngine } from "@projectstorm/react-canvas-core";
 import {
     DefaultPortModel,
+    DiagramEngine,
+    DiagramModel,
     NodeModel,
     NodeModelGenerics,
 } from "@projectstorm/react-diagrams";
 import {FilterNode} from "./FilterNode";
+import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
+import axios from "axios";
 
 export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     dataSet = {
@@ -12,24 +16,47 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     }
 
     inPort = new DefaultPortModel(true, "in");
+    prog_work_flow_mng: {
+        flowId: number;
+        progId: number; 
+        flowSeq: number; 
+        flowType: string; 
+        flowAttr: {}; 
+        flowDesc: string; 
+        crtdDttm: string; 
+        updtDttm: string;
+    };
 
-    prog_work_Flow = {
-        flow_id : 0,
-        //tmp
-        prog_id : 19,
-        flow_seq : 0,
-        flow_type : "",
-        flow_attr : {
-        },
-        flow_desc : "",
-        crtd_dttm : "",
-        updt_dttm : "",
-    }   
-
-    constructor(readonly engine: CanvasEngine) {
+    constructor(readonly engine: DiagramEngine) {
         super({ type: "output" });
         this.addPort(this.inPort);
-        this.inPort.setMaximumLinks(1);
+        this.prog_work_flow_mng = {
+            flowId : -1,
+            //tmp
+            progId : -1,
+            flowSeq : -1,
+            flowType : "output",
+            flowAttr : {
+            },
+            flowDesc : "",
+            crtdDttm : "",
+            updtDttm : "",
+        }  
+
+        const model = engine.getModel()
+        if (model instanceof ProjectDiagramModel){
+            const progMst = model.getProgMst();
+            this.prog_work_flow_mng.progId = progMst.progId;
+        } else{
+            console.log('Invalid model type');
+        }
+
+        axios.post("/diagram/project/savenode/" + this.prog_work_flow_mng.progId, this.prog_work_flow_mng, { maxRedirects: 0})
+        .catch((Error) => { 
+          console.log(Error);
+        }).then(response => {
+          console.log(response);
+        });
     }
 
     serialize() {

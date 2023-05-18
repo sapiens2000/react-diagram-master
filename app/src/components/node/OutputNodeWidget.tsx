@@ -55,12 +55,12 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       } | null>(null);
     const [curType, setCurType] = useState('');
     const [curRows, setCurRows] = useState(rows);
-    const [curAttr, setCurAttr] = useState(node.prog_work_Flow);
+    const [curAttr, setCurAttr] = useState(node.prog_work_flow_mng);
 
 		////////////////////추가한 부분/////////////////////
 	  const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
 	  const [memoContent, setMemoContent] = useState('');
-	  /////////////////////////////////////////////////
+
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -89,7 +89,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         return (
           <OutputModal
             dataSet={null}
-            prog_work_Flow_mng={node.prog_work_Flow}
+            prog_work_Flow_mng={node.prog_work_flow_mng}
             setOnModal={setOnModal}
             curType={curType}
             setCurType={setCurType}
@@ -130,7 +130,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     }
 
     const handleLock = () => {
-      if(node.isLocked() == true)
+      if(node.isLocked() === true)
         node.setLocked(true)
       else
         node.setLocked(false)
@@ -140,8 +140,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       engine.repaintCanvas();
     }
 
-		///////////////추가한 부분////////////////
-		////////////////MEMO////////////////////
 		const handleMemoOpen = (event: React.MouseEvent<HTMLElement>) => {
 			setMemoAnchorEl(event.currentTarget);
 		};
@@ -156,7 +154,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 
 		const memoOpen = Boolean(memoAnchorEl);
 		const id = memoOpen ? 'simple-popover' : undefined;
-		////////////////////////////////////////
 
 
 	return (

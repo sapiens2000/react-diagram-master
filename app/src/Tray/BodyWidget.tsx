@@ -17,6 +17,7 @@ import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SelectNodeModel from '../components/node/SelectNode';
+import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -155,8 +156,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							onDrop={(event) => {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
-
+								
 								var node: FilterNode | SelectNodeModel | OutputNodeModel = null;
+
 								if (data.type === 'select'){
 									node = new SelectNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'output'){

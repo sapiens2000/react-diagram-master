@@ -3,6 +3,7 @@ import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
 import { DiagramEngine } from "@projectstorm/react-diagrams-core";
 import {OutputNodeModel} from "./OutputNodeModel";
 import OutputNodeWidget from "./OutputNodeWidget";
+import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
 
 class OutputNodeFactory extends AbstractReactFactory<
     OutputNodeModel,
