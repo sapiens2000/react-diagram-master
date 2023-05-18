@@ -1,9 +1,10 @@
 import React, {FC, useState, useEffect} from "react";
-import { DiagramEngine } from "@projectstorm/react-diagrams";
+import {BaseModel, DiagramEngine} from "@projectstorm/react-diagrams";
 import {FilterNode, Field} from "./FilterNode";
 
-import {Container, Button, IconButton, Typography} from "@mui/material";
+import {Modal, Container, IconButton, Menu, MenuItem, Typography, Popover, TextareaAutosize} from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 import ModalPortal from "../modal/ModalPortal";
 import FilterModal from "../modal/FilterModal";
@@ -20,11 +21,87 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 
 	const initTable = Object.keys(node.dummy[0]);
 
-	const [modalOpened, setModalOpened] = useState(false);
+	const [filterModalOpened, setFilterModalOpened] = useState(false);
 	// const [fieldStates, setFieldStates] = useState(null);
 	const [tableField, setTableField] = useState(initTable);
 	const [isFirstRender, setIsFirstRender] = useState(true);
 	const [fieldChanged, setFieldChanged] = useState(false);
+
+	const [onModal, setOnModal] = useState(false);
+	const [contextMenu, setContextMenu] = React.useState<{
+		mouseX: number;
+		mouseY: number;
+	} | null>(null);
+
+	const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
+	const [memoContent, setMemoContent] = useState('');
+
+	//////////////CONTEXT//////////////
+	const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
+		event.preventDefault();
+		setContextMenu(
+			contextMenu === null
+				? {
+					mouseX: event.clientX + 2,
+					mouseY: event.clientY - 6,
+				}
+				: // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+					// Other native context menus might behave different.
+					// With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+				null,
+		);
+	};
+
+	const handleDelete = () => {
+		node.remove();
+		engine.repaintCanvas();
+	}
+
+	const handleCopy = () => {
+		// need connection with db and copy data set
+		node.setSelected(true);
+		let offset = { x: 100, y: 100 };
+		let model = engine.getModel()
+
+		let target = model.getSelectedEntities()
+
+		if(target.length > 0){
+			let newNode = target[0].clone()
+
+			newNode.setPosition(newNode.getX() + offset.x, newNode.getY() + offset.y);
+			model.addNode(newNode);
+			(newNode as BaseModel).setSelected(false);
+		}
+		node.setSelected(false);
+		setContextMenu(null);
+
+		console.log('copy')
+		engine.repaintCanvas();
+	}
+
+	const handleLock = () => {
+		if(node.isLocked() == true)
+			node.setLocked(true)
+		else
+			node.setLocked(false)
+
+		console.log('set lock')
+		setContextMenu(null);
+		engine.repaintCanvas();
+	}
+
+	const handleContextClose = () => {
+		setContextMenu(null);
+	};
+	///////////////////////////////////
+	//////////////MODAL////////////////
+	const handleModalOpen = () => {
+		setFilterModalOpened(true);
+	};
+
+	const handleModalClose = () => {
+		setFilterModalOpened(false);
+	};
 
 	node.refresh();
 	console.log(node.fieldStates);
@@ -42,19 +119,28 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 		}
 	}, [node.fieldStates]);
 
-	const handleOpen = () => {
-		setModalOpened(true);
-	};
-
-	const handleClose = () => {
-		setModalOpened(false);
-	};
-
 	const handleFieldStatesUpdate = (updatedFieldStates : Field) => {
 		node.setFieldState(updatedFieldStates);
 		setFieldChanged(!fieldChanged)
 	};
 
+	///////////////////////////////////
+	////////////////MEMO////////////////////
+	const handleMemoOpen = (event: React.MouseEvent<HTMLElement>) => {
+		setMemoAnchorEl(event.currentTarget);
+	};
+
+	const handleMemoClose = () => {
+		setMemoAnchorEl(null);
+	};
+
+	const handleMemoChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setMemoContent(event.target.value);
+	}
+
+	const memoOpen = Boolean(memoAnchorEl);
+	const id = memoOpen ? 'simple-popover' : undefined;
+	////////////////////////////////////////
 	useEffect(() => {
 		if(isFirstRender) {
 			setIsFirstRender(false);
@@ -71,7 +157,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 	}, [fieldChanged]);
 
 	return (
-		<div className="filter">
+		<div className="filter" onContextMenu={handleContextMenu}>
 			<S.Widget>
 				<S.OutPort
 					port={node.outPort}
@@ -83,10 +169,10 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 					engine={engine}
 					style={{ left: -4, top: "50%" }}
 				/>
-				<Container>
-					<IconButton onClick={handleOpen}><FilterAltIcon fontSize='large'/></IconButton>
-					{modalOpened && (
-						<ModalPortal closePortal={handleClose} flag={"filter"}>
+				<Container style={{position: 'absolute', top: 15, right: 0}}>
+					<IconButton onClick={handleModalOpen}><FilterAltIcon fontSize='large'/></IconButton>
+					{filterModalOpened && (
+						<ModalPortal closePortal={handleModalClose} flag={"filter"}>
 							<FilterModal
 								dataSet={node.dataSet}
 								onFieldStatesUpdate={handleFieldStatesUpdate}
@@ -98,6 +184,46 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 					)}
 				</Container>
 			</S.Widget>
+			<Popover
+				id={id}
+				open={memoOpen}
+				anchorEl={memoAnchorEl}
+				onClose={handleMemoClose}
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'center',
+				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}}
+			>
+				<div style={{padding: '20px', width: '200px', backgroundColor: '#686869'}}>
+					<TextareaAutosize
+						minRows={3}
+						value={memoContent}
+						onChange={handleMemoChange}
+						placeholder="메모를 작성하세요..."
+						style={{width: '100%', backgroundColor: '#686869', color: '#fff'}}
+					/>
+				</div>
+			</Popover>
+			{onModal}
+			<Menu
+				open={contextMenu !== null}
+				onClose={handleContextClose}
+				anchorReference="anchorPosition"
+				anchorPosition={
+					contextMenu !== null
+						? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+						: undefined
+				}
+			>
+				<MenuItem onClick={handleDelete}>삭제</MenuItem>
+				<MenuItem onClick={handleCopy}>복사</MenuItem>
+				<MenuItem onClick={handleLock}>잠금</MenuItem>
+				<MenuItem onClick={handleMemoOpen}>메모</MenuItem>
+			</Menu>
 			<div id="filter-modal"></div>
 		</div>
 	);
