@@ -4,17 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BodyWidget } from './Tray/BodyWidget';
+import { render } from "react-dom";
 import { Main } from './Main';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-root.render(
+render(
   <React.StrictMode>
       {/* <Main/> */}
       <BodyWidget app={new App()}/>
-  </React.StrictMode>
+  </React.StrictMode>,
+	document.getElementById("root")
 );
 
 

@@ -61,7 +61,6 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 				condition,
 				filterValue,
 				memo,
-				orFilter
 			},
 		};
 		setFieldStates(updatedFieldStates);

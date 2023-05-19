@@ -6,17 +6,19 @@ import styled from '@emotion/styled';
 import { CanvasWidget } from '@projectstorm/react-diagrams';
 import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
+import SelectNodeModel from '../components/node/SelectNode';
 import OutputNodeModel from '../components/node/OutputNodeModel';
 import FilterNode from '../components/node/FilterNode';
+import MemoNodeModel from '../components/node/MemoNodeModel';
 import { IconButton } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
+import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
 import saveAs from 'file-saver';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import SelectNodeModel from '../components/node/SelectNode';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
 
 export interface BodyWidgetProps {
@@ -120,6 +122,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
 							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
 							<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
+							<TrayItemWidget model={{ type: 'memo' }} name="Memo Node" color="rgb(0,192,255)"><NoteAltOutlinedIcon fontSize='large'/></TrayItemWidget>
 						</div>
 					</TrayWidget>
 					<S.Content2>
@@ -156,8 +159,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 							onDrop={(event) => {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
-								
-								var node: FilterNode | SelectNodeModel | OutputNodeModel = null;
+
+								var node: FilterNode | SelectNodeModel | OutputNodeModel | MemoNodeModel= null;
 
 								if (data.type === 'select'){
 									node = new SelectNodeModel(this.props.app.getDiagramEngine());
@@ -165,6 +168,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 									node = new OutputNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'filter'){
 									node = new FilterNode(this.props.app.getDiagramEngine());
+								} else if (data.type === 'memo') {
+									node = new MemoNodeModel(this.props.app.getDiagramEngine());
 								}
 								var point = this.props.app.getDiagramEngine().getRelativeMousePoint(event);
 								node.setPosition(point);

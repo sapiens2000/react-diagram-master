@@ -29,9 +29,6 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 		mouseY: number;
 	} | null>(null);
 
-	const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
-	const [memoContent, setMemoContent] = useState('');
-
 	//////////////CONTEXT//////////////
 	const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
@@ -92,10 +89,12 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 	//////////////////////////////////////
 	//////////////MODAL/////////////////
 	const handleModalOpen = () => {
+		node.setLocked(true);
 		setSelectModalOpened(true);
 	};
 
 	const handleModalClose = () => {
+		node.setLocked(false);
 		setSelectModalOpened(false);
 	};
 
@@ -104,22 +103,6 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 		node.setFlowAttr(newFlowAttrInfo);
 		setSqlChanged(!sqlChanged);
 	}
-	////////////////////////////////////////
-	////////////////MEMO////////////////////
-	const handleMemoOpen = (event: React.MouseEvent<HTMLElement>) => {
-		setMemoAnchorEl(event.currentTarget);
-	};
-
-	const handleMemoClose = () => {
-		setMemoAnchorEl(null);
-	};
-
-	const handleMemoChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setMemoContent(event.target.value);
-	}
-
-	const memoOpen = Boolean(memoAnchorEl);
-	const id = memoOpen ? 'simple-popover' : undefined;
 	////////////////////////////////////////
 	// console.log(node.flowAttrInfo);
 
@@ -168,30 +151,6 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 					)}
 				</Container>
 			</S.Widget>
-			<Popover
-				id={id}
-				open={memoOpen}
-				anchorEl={memoAnchorEl}
-				onClose={handleMemoClose}
-				anchorOrigin={{
-					vertical: 'bottom',
-					horizontal: 'center',
-				}}
-				transformOrigin={{
-					vertical: 'top',
-					horizontal: 'center',
-				}}
-			>
-				<div style={{padding: '20px', width: '200px', backgroundColor: '#686869'}}>
-					<TextareaAutosize
-						minRows={3}
-						value={memoContent}
-						onChange={handleMemoChange}
-						placeholder="메모를 작성하세요..."
-						style={{width: '100%', backgroundColor: '#686869', color: '#fff'}}
-					/>
-				</div>
-			</Popover>
 			{onModal}
 			<Menu
 				open={contextMenu !== null}
@@ -206,7 +165,6 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 				<MenuItem onClick={handleDelete}>삭제</MenuItem>
 				<MenuItem onClick={handleCopy}>복사</MenuItem>
 				<MenuItem onClick={handleLock}>잠금</MenuItem>
-				<MenuItem onClick={handleMemoOpen}>메모</MenuItem>
 			</Menu>
 			<div id="select-modal"></div>
 		</div>

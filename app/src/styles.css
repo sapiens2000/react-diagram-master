@@ -41,3 +41,17 @@ body {
 
     padding: 1rem;
 }
+
+.rdw-editor-toolbar {
+	background-color: #ffffcc !important;
+	border: 1px solid #f1f1f1 !important;
+	border-radius: 5px !important;
+	justify-content: center !important;
+	position: relative !important;
+	top: -57px; /* Change this to move the toolbar down */
+}
+
+.editorClassName {
+	position: relative;
+	top: -57px;
+}

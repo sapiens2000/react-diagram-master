@@ -57,10 +57,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     const [curRows, setCurRows] = useState(rows);
     const [curAttr, setCurAttr] = useState(node.prog_work_flow_mng);
 
-		////////////////////추가한 부분/////////////////////
-	  const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
-	  const [memoContent, setMemoContent] = useState('');
-
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -140,22 +136,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       engine.repaintCanvas();
     }
 
-		const handleMemoOpen = (event: React.MouseEvent<HTMLElement>) => {
-			setMemoAnchorEl(event.currentTarget);
-		};
-
-		const handleMemoClose = () => {
-			setMemoAnchorEl(null);
-		};
-
-		const handleMemoChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-			setMemoContent(event.target.value);
-		}
-
-		const memoOpen = Boolean(memoAnchorEl);
-		const id = memoOpen ? 'simple-popover' : undefined;
-
-
 	return (
         <div className="output" onDoubleClick={handleModalOpen} onContextMenu={handleContextMenu}>
             <S.Widget>
@@ -168,33 +148,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
                     <EastIcon fontSize="large"/>
                 </Container>
             </S.Widget>
-
-					{/******추가한 부분*******/}
-					<Popover
-						id={id}
-						open={memoOpen}
-						anchorEl={memoAnchorEl}
-						onClose={handleMemoClose}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'center',
-						}}
-						transformOrigin={{
-							vertical: 'top',
-							horizontal: 'center',
-						}}
-					>
-						<div style={{padding: '20px', width: '200px', backgroundColor: '#686869'}}>
-							<TextareaAutosize
-								minRows={3}
-								value={memoContent}
-								onChange={handleMemoChange}
-								placeholder="메모를 작성하세요..."
-								style={{width: '100%', backgroundColor: '#686869', color: '#fff'}}
-							/>
-						</div>
-					</Popover>
-					{/******추가한 부분*******/}
 					{onModal && renderModal()}
 					<Menu
 						open={contextMenu !== null}
@@ -209,7 +162,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 						<MenuItem onClick={handleDelete}>삭제</MenuItem>
 						<MenuItem onClick={handleCopy}>복사</MenuItem>
 						<MenuItem onClick={handleLock}>잠금</MenuItem>
-						<MenuItem onClick={handleMemoOpen}>메모</MenuItem>
 					</Menu>
         </div>
     );

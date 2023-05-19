@@ -2,6 +2,26 @@
 import styled from "@emotion/styled";
 import { PortWidget } from "@projectstorm/react-diagrams";
 
+export const Memo = styled.div`
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  border: 1px solid #f1f1f1;
+  min-width: 290px;
+  min-height: 70px;
+  max-height: 500px;
+  background: #ffffcc;
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  overflow-x: auto;
+  overflow-y: auto;
+`;
+
 export const Widget = styled.div`
   box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
   width: 100px;
