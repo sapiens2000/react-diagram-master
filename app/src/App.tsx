@@ -12,6 +12,11 @@ export default class App {
   protected activeModel: SRD.DiagramModel;
 	protected engine: SRD.DiagramEngine;
 
+	private _workflow: any[] = [];
+	get workflow(): any[] {
+		return this._workflow;
+	}
+
   constructor() {
 		//this.engine = SRD.default();
     this.engine = createEngine({registerDefaultDeleteItemsAction: false});
@@ -32,9 +37,24 @@ export default class App {
 
     model.registerListener({
       linksUpdated: (event: any) => {
+				const link = event.link
         event.link.registerListener({
           targetPortChanged: (event: any) => {
-              console.log(event.port.parent);
+							// console.log(event.port);
+              // console.log(link);
+
+							if(event.port.options.alignment == 'left') {
+								let tempFlowList = [link.sourcePort.parent.progWorkFlowMng.flowId,
+																					link.targetPort.parent.progWorkFlowMng.flowId];
+								this._workflow.push(tempFlowList);
+							}
+							else if(event.port.options.alignment == 'right') {
+								let tempFlowList = [link.targetPort.parent.progWorkFlowMng.flowId,
+																					link.sourcePort.parent.progWorkFlowMng.flowId];
+								this._workflow.push(tempFlowList);
+							}
+
+							// console.log(this.workflow);
           }
         })
       }

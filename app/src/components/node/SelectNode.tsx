@@ -18,7 +18,7 @@ export class SelectNode extends NodeModel<NodeModelGenerics>{
 	}
 
 	progWorkFlowMng = {
-		"flowId" : "",
+		"flowId" : "1",
 		"progId" : 19,
 		"flowSeq" : 0,
 		"flowType" : "",

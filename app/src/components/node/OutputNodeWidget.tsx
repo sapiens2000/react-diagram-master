@@ -55,7 +55,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       } | null>(null);
     const [curType, setCurType] = useState('');
     const [curRows, setCurRows] = useState(rows);
-    const [curAttr, setCurAttr] = useState(node.prog_work_flow_mng);
+    const [curAttr, setCurAttr] = useState(node.progWorkFlowMng);
 
 
     const handleModalOpen = () => {
@@ -85,7 +85,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         return (
           <OutputModal
             dataSet={null}
-            prog_work_Flow_mng={node.prog_work_flow_mng}
+            prog_work_Flow_mng={node.progWorkFlowMng}
             setOnModal={setOnModal}
             curType={curType}
             setCurType={setCurType}

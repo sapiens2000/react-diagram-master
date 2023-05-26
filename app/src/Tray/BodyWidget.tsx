@@ -82,6 +82,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	handlePlay = () => {
 		console.log('play project')
+		console.log(this.props.app.workflow);
 	}
 
 	handleSaveProject = () => {
