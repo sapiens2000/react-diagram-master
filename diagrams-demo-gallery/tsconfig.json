@@ -1,7 +1,7 @@
 {
 	"compileOnSave": false,
 	"compilerOptions": {
-		"suppressExcessPropertyErrors": true,
+		"ignoreDeprecations": "5.0",
 		"declaration": true,
 		"composite": true,
 		"incremental": true,
