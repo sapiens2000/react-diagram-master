@@ -25,6 +25,10 @@ export class ProjectDiagramModel<G extends DiagramModelGenerics = DiagramModelGe
         return this.prog_mst.progId;
     }
 
+    setUseYn(){
+        this.prog_mst.useYn = !this.prog_mst.useYn 
+        console.log(this.prog_mst.useYn)
+    }
     
 }
 
