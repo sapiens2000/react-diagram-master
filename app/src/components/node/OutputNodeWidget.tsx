@@ -62,6 +62,10 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         setOnModal(true);
     }
 
+    const handleContextClose = () => {
+      setContextMenu(null)
+    }
+
     const handleContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
         setContextMenu(
@@ -77,9 +81,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
           );
         };
 
-    const handleClose = () => {
-        setContextMenu(null)
-    }
 
     const renderModal = () => {
         return (
@@ -151,7 +152,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 					{onModal && renderModal()}
 					<Menu
 						open={contextMenu !== null}
-						onClose={handleClose}
+						onClose={handleContextClose}
 						anchorReference="anchorPosition"
 						anchorPosition={
 							contextMenu !== null
