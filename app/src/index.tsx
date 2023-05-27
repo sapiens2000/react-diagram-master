@@ -5,7 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BodyWidget } from './Tray/BodyWidget';
 import { render } from "react-dom";
-import { Main } from './Main';
+import ProjectSelection from './ProjectSelection';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,8 +14,8 @@ const root = ReactDOM.createRoot(
 
 render(
   <React.StrictMode>
-      {/* <Main/> */}
-      <BodyWidget app={new App()}/>
+      {/* <ProjectSelection/> */}
+      <BodyWidget app={new App(true)}/>
   </React.StrictMode>,
 	document.getElementById("root")
 );

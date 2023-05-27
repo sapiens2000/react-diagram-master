@@ -19,6 +19,9 @@ import saveAs from 'file-saver';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
 
 export interface BodyWidgetProps {
@@ -94,8 +97,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 		// }
 		console.log(project_json);
 		console.log('save project')
-		const file = new File([JSON.stringify(project_json)], '구조.txt', { type: 'text/plain;charset=utf-8' });
-       	saveAs(file);
+		JSON.stringify(project_json)
 	}
 
 	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +114,10 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			reader.readAsText(file);
 		}
 	}
+
+	handleUseChange = (e: any) => {
+		const current_model = this.props.app.getActiveDiagram().setUseYn();
+	} 
 
 	render() {
 		return (
@@ -136,6 +142,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 						프로젝트명
 						</div>
 							<S.ButtonBox>
+								<FormControlLabel control={<Checkbox/>} onChange={this.handleUseChange} label="사용" />
 								<IconButton onClick={this.handlePlay}>
 									<PlayCircleFilledWhiteOutlinedIcon fontSize='large' style={{color: 'white'}}/>
 								</IconButton>
@@ -175,6 +182,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								node.setPosition(point);
 								this.props.app.getDiagramEngine().getModel().addNode(node);
 								this.forceUpdate();
+								console.log('drag stopped')
 							}}
 							onDragOver={(event) => {
 								event.preventDefault();
