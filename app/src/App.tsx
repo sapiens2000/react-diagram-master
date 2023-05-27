@@ -9,16 +9,20 @@ import { ProjectDiagramModel } from './components/model/ProjectDiagramModel';
 import axios from 'axios';
 
 export default class App {
-  protected activeModel: SRD.DiagramModel;
+  protected activeModel: ProjectDiagramModel;
 	protected engine: SRD.DiagramEngine;
 
-  constructor() {
+  constructor(newProject: boolean) {
 		//this.engine = SRD.default();
     this.engine = createEngine({registerDefaultDeleteItemsAction: false});
-		this.newModel();
+		if(newProject){
+      this.newProject();
+    }else{
+      //this.loadProject();
+    }
 	}
 
-  public newModel(){
+  public newProject(){
     //this.engine.setModel(this.activeModel);
 
     this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
@@ -51,7 +55,7 @@ export default class App {
         viewAttr: {},
         useYn: false,
         crtdDttm: "",
-        updtdttm: "",
+        updtDttm: "",
         dltDttm: ""
       }
 
@@ -75,7 +79,7 @@ export default class App {
     return newModel;
   }
 
-	public getActiveDiagram(): SRD.DiagramModel {
+	public getActiveDiagram(): ProjectDiagramModel {
 		return this.activeModel;
 	}
 
