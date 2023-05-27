@@ -19,7 +19,7 @@ export class FilterNode extends NodeModel<NodeModelGenerics> {
 	}
 
 	progWorkFlowMng = {
-		"flowId" : "",
+		"flowId" : "2",
 		"progId" : 19,
 		"flowSeq" : 0,
 		"flowType" : "",
