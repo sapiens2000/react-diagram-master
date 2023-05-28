@@ -19,10 +19,9 @@ export interface FilterNodeWidgetProps {
 
 const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 
-	const initTable = Object.keys(node.dummy[0]);
+	const initTable = node.selectFlowAttrInfo ? node.selectFlowAttrInfo.col : null;
 
 	const [filterModalOpened, setFilterModalOpened] = useState(false);
-	// const [fieldStates, setFieldStates] = useState(null);
 	const [tableField, setTableField] = useState(initTable);
 	const [isFirstRender, setIsFirstRender] = useState(true);
 	const [fieldChanged, setFieldChanged] = useState(false);
@@ -103,20 +102,20 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 	};
 
 	node.refresh();
-	console.log(node.fieldStates);
+	console.log(node.selectFlowAttrInfo);
 
 	useEffect(() => {
-		if(node.dummy) {
-			setTableField(Object.keys(node.dummy[0]));
+		if(node.selectFlowAttrInfo && node.selectFlowAttrInfo.col) {
+			setTableField(node.selectFlowAttrInfo.col);
 		}
-	}, [node.dummy]);
+	}, [node.selectFlowAttrInfo]);
 
-	useEffect(() => {
-		if(node.fieldStates) {
-			node.filteredData = GetFilteredData(node.dummy, node.fieldStates);
-			console.log(node.filteredData);
-		}
-	}, [node.fieldStates]);
+	// useEffect(() => {
+	// 	if(node.fieldStates) {
+	// 		node.filteredData = GetFilteredData(node.dummy, node.fieldStates);
+	// 		console.log(node.filteredData);
+	// 	}
+	// }, [node.fieldStates]);
 
 	const handleFieldStatesUpdate = (updatedFieldStates : Field) => {
 		node.setFieldState(updatedFieldStates);
@@ -155,7 +154,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 				<Container style={{position: 'absolute', top: 15, right: 0}}>
 					<IconButton onClick={handleModalOpen}><FilterAltIcon fontSize='large'/></IconButton>
 					{filterModalOpened && (
-						<ModalPortal closePortal={handleModalClose} flag={"filter"}>
+						<ModalPortal closePortal={handleModalClose} flag={"filter"} id={node.progWorkFlowMng.progId}>
 							<FilterModal
 								dataSet={node.dataSet}
 								onFieldStatesUpdate={handleFieldStatesUpdate}
@@ -182,7 +181,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 				<MenuItem onClick={handleCopy}>복사</MenuItem>
 				<MenuItem onClick={handleLock}>잠금</MenuItem>
 			</Menu>
-			<div id="filter-modal"></div>
+			<div id={`filter-modal-${node.progWorkFlowMng.progId}`}></div>
 		</div>
 	);
 }

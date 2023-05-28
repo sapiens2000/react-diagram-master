@@ -3,26 +3,22 @@ import CloseIcon from '@mui/icons-material/Close';
 import React, {useEffect, useRef, useState} from "react";
 import { createPortal } from "react-dom";
 
-const ModalPortal = ({ children, closePortal, flag }) => {
+const ModalPortal = ({ children, closePortal, flag, id }) => {
     const [mounted, setMounted] = useState(false);
     const ref = useRef(null);
 
     useEffect(() => {
         setMounted(true);
         if (document && flag == "filter") {
-            const dom = document.getElementById("filter-modal");
+            const dom = document.getElementById(`filter-modal-${id}`);
             ref.current = dom;
         }
         else if (document && flag == "select") {
-            const dom = document.getElementById("select-modal");
+            const dom = document.getElementById(`select-modal-${id}`);
             ref.current = dom;
         }
         else if (document && flag == "save") {
 					const dom = document.getElementById("save-modal");
-					ref.current = dom;
-				}
-				else if (document && flag == "memo") {
-					const dom = document.getElementById("memo-modal");
 					ref.current = dom;
 				}
         return () => {

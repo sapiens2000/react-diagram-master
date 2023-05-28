@@ -19,7 +19,6 @@ import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
 
 const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableField }) => {
-	// const tableField = ["LOG_DATE", "LOG_TIME", "LOG_USER_ID", "LOG_PAY_ACC"];
 	const conditions = [">", "<", ">=", "<=", "=", "LIKE", "IN", "NOT LIKE"];
 
 	const [selectedField, setSelectedField] = useState("");
@@ -34,7 +33,15 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 		if (savedFieldStates) {
 			setFieldStates(savedFieldStates);
 			console.log("saved");
-		} else {
+		}
+		else if (tableField == null || tableField.length === 0) {
+			const initialFieldState = {
+				"": { "condition": "", "filterValue": "", "memo": "" }
+			};
+			initialFieldState.orFilter = false;
+			setFieldStates(initialFieldState);
+		}
+		else {
 			console.log("non-saved");
 			const initialFieldState = tableField.reduce((acc, field) => {
 				acc[field] = { condition: "", filterValue: "", memo: "" };
@@ -43,7 +50,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 			initialFieldState.orFilter = false;
 			setFieldStates(initialFieldState);
 		}
-	}, [savedFieldStates]);
+	}, [savedFieldStates, tableField]);
 
 	const handleOrFilterChange = (event) => {
 		const updatedFieldStates = {
@@ -96,7 +103,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 									value={selectedField}
 									onChange={(e) => setSelectedField(e.target.value)}
 								>
-									{tableField.map((field) => (
+									{tableField && tableField.map((field) => (
 										<MenuItem key={field} value={field}>
 											{field}
 										</MenuItem>
@@ -156,7 +163,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{tableField.map((field, index) => (
+						{tableField && tableField.map((field, index) => (
 							<TableRow
 								key={field}
 								onClick={() => {
