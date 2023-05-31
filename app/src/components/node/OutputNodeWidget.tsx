@@ -5,46 +5,14 @@ import {Modal, Container, IconButton, Typography, Popover, TextareaAutosize} fro
 import OutputModal from "../modal/OutputModal";
 import * as S from "../../adstyled";
 import EastIcon from '@mui/icons-material/East';
-import { GridRowsProp } from "@mui/x-data-grid";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { ContextLock, ContextCopy, ContextDelete } from "./ContextMenuOptions";
 
 export interface OutputNodeWidgetProps {
     node: OutputNodeModel;
     engine: DiagramEngine;
 }
-
-const rows: GridRowsProp = [
-    {
-      id: 1,
-      tableFieldName: 'LOG_DATE',
-      type: '',
-      mappingField: '',
-      defaultValue: '',
-    },
-    {
-        id: 2,
-        tableFieldName: 'LOG_TIME',
-        type: '',
-        mappingField: '',
-        defaultValue: '',
-    },
-    {
-        id: 3,
-        tableFieldName: 'LOG_USER_ID',
-        type: '',
-        mappingField: '',
-        defaultValue: '',
-    },
-    {
-        id: 4,
-        tableFieldName: 'LOG_PAY_ACC',
-        type: '',
-        mappingField: '',
-        defaultValue: '',
-      }
-  ];
-
 
 
 const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
@@ -53,10 +21,6 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         mouseX: number;
         mouseY: number;
       } | null>(null);
-    const [curType, setCurType] = useState('');
-    const [curRows, setCurRows] = useState(rows);
-    const [curAttr, setCurAttr] = useState(node.progWorkFlowMng);
-
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -74,71 +38,40 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
                   mouseX: event.clientX + 2,
                   mouseY: event.clientY - 6,
                 }
-              : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
-                // Other native context menus might behave different.
-                // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+              : 
                 null,
           );
         };
-
 
     const renderModal = () => {
         return (
           <OutputModal
             dataSet={null}
-            prog_work_Flow_mng={node.progWorkFlowMng}
+            progWorkFlowMng={node.progWorkFlowMng}
             setOnModal={setOnModal}
-            curType={curType}
-            setCurType={setCurType}
-            setCurRows={setCurRows}
-            curRows={curRows}
-            curAttr={curAttr}
-            setCurAttr={setCurAttr}
           />
         );
       };
 
     const handleDelete = () => {
-      node.remove();
-      engine.repaintCanvas();
+      ContextDelete(engine, node)
+      setContextMenu(null);
     }
 
     const handleCopy = () => {
-      // need connection with db and copy data set
-      node.setSelected(true);
-      let offset = { x: 100, y: 100 };
-      let model = engine.getModel()
-
-      let target = model.getSelectedEntities()
-
-      if(target.length > 0){
-        let newNode = target[0].clone()
-
-        newNode.setPosition(newNode.getX() + offset.x, newNode.getY() + offset.y);
-        model.addNode(newNode);
-        (newNode as BaseModel).setSelected(false);
-
-      }
-      node.setSelected(false);
+      ContextCopy(engine, node);
       setContextMenu(null);
-
-      console.log('copy')
-      engine.repaintCanvas();
     }
 
     const handleLock = () => {
-      if(node.isLocked() === true)
-        node.setLocked(true)
-      else
-        node.setLocked(false)
-
-      console.log('set lock')
+      ContextLock(engine, node)
       setContextMenu(null);
-      engine.repaintCanvas();
     }
 
 	return (
-        <div className="output" onDoubleClick={handleModalOpen} onContextMenu={handleContextMenu}>
+        <div className="output" 
+        onDoubleClick={handleModalOpen} 
+        onContextMenu={handleContextMenu}>
             <S.Widget>
                 <S.InPort
                     port={node.inPort}
