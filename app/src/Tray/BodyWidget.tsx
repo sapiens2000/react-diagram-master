@@ -6,23 +6,23 @@ import styled from '@emotion/styled';
 import { CanvasWidget } from '@projectstorm/react-diagrams';
 import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
-import SelectNodeModel from '../components/node/SelectNode';
+import SelectNodeModel from '../components/node/SelectNodeModel';
 import OutputNodeModel from '../components/node/OutputNodeModel';
-import FilterNode from '../components/node/FilterNode';
 import MemoNodeModel from '../components/node/MemoNodeModel';
+import FilterNode from '../components/node/FilterNodeModel';
 import { IconButton } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
 import PlayCircleFilledWhiteOutlinedIcon from '@mui/icons-material/PlayCircleFilledWhiteOutlined';
-import saveAs from 'file-saver';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import EastIcon from '@mui/icons-material/East';
 import StorageIcon from '@mui/icons-material/Storage';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
+import axios from 'axios';
+import ProjectInfoModal from '../components/modal/ProjectInfoModal';
+import SidePanel from './SidePanel';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -76,61 +76,60 @@ namespace S {
 }
 
 export class BodyWidget extends React.Component<BodyWidgetProps> {
+	
+	handleLoadProject = () => {
+		let project = null;
 
-	loadProject = (project: string) => {
 		const engine = this.props.app.getDiagramEngine()
-		engine.getModel().deserializeModel(JSON.parse(project), engine);
+
 		this.forceUpdate();
 	}
 
 	handlePlay = () => {
-		console.log('play project')
 		console.log(this.props.app.workflow);
 	}
 
 	handleSaveProject = () => {
 		let project_json = this.props.app.getDiagramEngine().getModel().serialize();
-		// let allEntities = this.props.app.getDiagramEngine().getModel().getSelectionEntities();
-		// if (allEntities.length > 0){
-		// 	_.forEach(allEntities, (node) => {
-		// 		project_json.push(node.serialize());
-		// 	})
-		// }
-		console.log(project_json);
-		console.log('save project')
-		JSON.stringify(project_json)
-	}
-
-	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// 1st file
-		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-			  const result = e?.target?.result;
-			  if (typeof result === 'string') {
-				this.loadProject(result);
-			  }
-			};
-			reader.readAsText(file);
+		console.log(typeof(project_json))
+		let cur_prog_mst = this.props.app.getActiveDiagram().prog_mst
+		
+		let progMstDto = {
+			progId: cur_prog_mst.progId,
+		 	progNm: cur_prog_mst.progNm,
+			progDesc: cur_prog_mst.progDesc,
+			viewAttr: JSON.stringify(project_json),
+			useYn: cur_prog_mst.useYn,
+			updtDttm: cur_prog_mst.updtDttm
 		}
+
+		axios.post(`/diagram/project/update/${cur_prog_mst.progId}`, progMstDto, { maxRedirects: 0})
+        .catch((error) => {
+          console.log(error);
+        }).then(response => {
+          console.log(response);
+        });
+
 	}
 
 	handleUseChange = (e: any) => {
 		const current_model = this.props.app.getActiveDiagram().setUseYn();
 	} 
 
+	handleCloseModal = () => {
+		this.setState({ isProjectInfoModalOpen: false });
+	  };
+
 	render() {
 		return (
 			<S.Body>
 				<S.Content>
 					<TrayWidget>
-						<div>
-							<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
-							<TrayItemWidget model={{ type: 'memo' }} name="Memo Node" color="rgb(0,192,255)"><NoteAltOutlinedIcon fontSize='large'/></TrayItemWidget>
-						</div>
+						{/* <SidePanel/> */}
+						<TrayItemWidget model={{ type: 'select' }} name="Select Node" color="rgb(0,192,255)"><StorageIcon fontSize='large'/></TrayItemWidget>
+						<TrayItemWidget model={{ type: 'filter' }} name="Filter Node" color="rgb(0,192,255)"><FilterAltIcon fontSize='large'/></TrayItemWidget>
+						<TrayItemWidget model={{ type: 'output' }} name="Output Node" color="rgb(0,192,255)"><EastIcon fontSize='large'/></TrayItemWidget>
+						<TrayItemWidget model={{ type: 'memo' }} name="Memo Node" color="rgb(0,192,255)"><NoteAltOutlinedIcon fontSize='large'/></TrayItemWidget>
 					</TrayWidget>
 					<S.Content2>
 						<S.Header>
@@ -150,17 +149,19 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								<IconButton onClick={this.handleSaveProject}>
 									<SaveOutlinedIcon fontSize='large'  style={{color: 'white'}}/>
 								</IconButton>
-								<IconButton>
-									<label htmlFor="file-input">
-										<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
-									</label>
-									<input
-										id="file-input"
-										type="file"
-										onChange={this.handleSelectFile}
-										style={{ display: 'none'}}
-									/>
+								<IconButton onClick={this.handleLoadProject}>
+									<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
 								</IconButton>
+								{/* {isProjectInfoModalOpen && (
+									<div className="modal-overlay">
+										<div className="modal-container">
+											<ProjectInfoModal
+											onClose={this.handleCloseModal}
+											onProjectSelect={this.handleProjectSelect}
+											/>
+										</div>
+									</div>
+								)} */}
 							</S.ButtonBox>
 						</S.Header>
 						<S.Layer
@@ -183,7 +184,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								node.setPosition(point);
 								this.props.app.getDiagramEngine().getModel().addNode(node);
 								this.forceUpdate();
-								console.log('drag stopped')
 							}}
 							onDragOver={(event) => {
 								event.preventDefault();
