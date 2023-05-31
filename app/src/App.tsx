@@ -64,10 +64,11 @@ export default class App {
       }
     });
 
+    this.activeModel = model;
     this.engine.setModel(model);
   }
 
-  public makeNewProg(): ProjectDiagramModel{
+  public makeNewProg(): ProjectDiagramModel{    
     var tmp_prog_mst = {
         progId: -1,
         progNm: "new project",
@@ -78,24 +79,24 @@ export default class App {
         updtDttm: "",
         dltDttm: ""
       }
-
-		// 주석 풀것
-    // 나중에 변경
-    // axios.post("/diagram/project", tmp_prog_mst, { maxRedirects: 0})
-    // .catch((Error) => {
-    //   console.log(Error);
-    // }).then(response => {
-    //   const regex = /프로젝트 ID: (\d+)/;
-    //   const matches = response.data.match(regex);
-    //   if (matches) {
-    //     const id = parseInt(matches[1]);
-    //     tmp_prog_mst.progId = id;
-    //   }
-    // });
-
-    console.log(tmp_prog_mst);
+    
     const newModel = new ProjectDiagramModel();
-    newModel.setProgMst(tmp_prog_mst);
+
+    axios.post("/diagram/project", tmp_prog_mst)
+    .then(response => {
+      const id = parseInt(response.data);
+      tmp_prog_mst.progId = id;
+
+      
+      newModel.setProgMst(tmp_prog_mst);
+      console.log(newModel.getProgMst());
+  
+    } )
+    .catch(error => {
+      console.log(error);
+
+    });
+
     return newModel;
   }
 
