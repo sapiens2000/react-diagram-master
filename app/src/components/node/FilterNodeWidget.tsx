@@ -1,6 +1,6 @@
 import React, {FC, useState, useEffect} from "react";
 import {BaseModel, DiagramEngine} from "@projectstorm/react-diagrams";
-import {FilterNode, Field} from "./FilterNode";
+import {FilterNodeModel, Field} from "./FilterNodeModel";
 
 import {Modal, Container, IconButton, Menu, MenuItem, Typography, Popover, TextareaAutosize} from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -13,7 +13,7 @@ import * as S from "../../adstyled";
 import "../../styles.css";
 
 export interface FilterNodeWidgetProps {
-	node: FilterNode;
+	node: FilterNodeModel;
 	engine: DiagramEngine;
 }
 
