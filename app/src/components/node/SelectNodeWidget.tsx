@@ -113,24 +113,24 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 			return;
 		}
 		else {
-			node.progWorkFlowMng = {
-				...node.progWorkFlowMng,
-				flowAttr: JSON.stringify(node.flowAttrInfo.sql)
-			};
-			console.log('Sending data:', JSON.stringify(node.progWorkFlowMng, null, 2));
-			const fetchData = async () => {
-				try {
-					const response = await axios.post("/diagram/project/savenode/19",
-						node.progWorkFlowMng
-					);
-					console.log("Response data:", response.data);
-					setData(response.data); // 받은 데이터를 상태로 저장
-				} catch (error) {
-					console.error("Error fetching data:", error);
-				}
-			};
-
-			fetchData();
+			// node.progWorkFlowMng = {
+			// 	...node.progWorkFlowMng,
+			// 	flowAttr: JSON.stringify(node.flowAttrInfo.sql)
+			// };
+			// console.log('Sending data:', JSON.stringify(node.progWorkFlowMng, null, 2));
+			// const fetchData = async () => {
+			// 	try {
+			// 		const response = await axios.post("/api/diagram/project/savenode/1",
+			// 			node.progWorkFlowMng
+			// 		);
+			// 		console.log("Response data:", response.data);
+			// 		setData(response.data); // 받은 데이터를 상태로 저장
+			// 	} catch (error) {
+			// 		console.error("Error fetching data:", error);
+			// 	}
+			// };
+			//
+			// fetchData();
 		}
 	}, [sqlChanged]);
 

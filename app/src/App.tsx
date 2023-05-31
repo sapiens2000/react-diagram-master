@@ -17,13 +17,13 @@ export default class App {
 		return this._workflow;
 	}
 
-  constructor(newProject: boolean) {
+  constructor(newProject: Number) {
 		//this.engine = SRD.default();
     this.engine = createEngine({registerDefaultDeleteItemsAction: false});
-		if(newProject){
+		if(newProject == 0){
       this.newProject();
     }else{
-      //this.loadProject();
+      this.loadProject(newProject);
     }
 	}
 
@@ -39,14 +39,12 @@ export default class App {
 
     const model = this.makeNewProg();
 
+		// 노드 실행 시퀀스 확인
     model.registerListener({
       linksUpdated: (event: any) => {
 				const link = event.link
         event.link.registerListener({
           targetPortChanged: (event: any) => {
-							// console.log(event.port);
-              // console.log(link);
-
 							if(event.port.options.alignment == 'left') {
 								let tempFlowList = [link.sourcePort.parent.progWorkFlowMng.flowId,
 																					link.targetPort.parent.progWorkFlowMng.flowId];
@@ -57,8 +55,6 @@ export default class App {
 																					link.sourcePort.parent.progWorkFlowMng.flowId];
 								this._workflow.push(tempFlowList);
 							}
-
-							// console.log(this.workflow);
           }
         })
       }
@@ -69,7 +65,7 @@ export default class App {
 
   public makeNewProg(): ProjectDiagramModel{
     var tmp_prog_mst = {
-        progId: -1,
+        progId: 0,
         progNm: "new project",
         progDesc: "",
         viewAttr: {},
@@ -79,25 +75,45 @@ export default class App {
         dltDttm: ""
       }
 
-		// 주석 풀것
-    // 나중에 변경
-    // axios.post("/diagram/project", tmp_prog_mst, { maxRedirects: 0})
-    // .catch((Error) => {
-    //   console.log(Error);
-    // }).then(response => {
-    //   const regex = /프로젝트 ID: (\d+)/;
-    //   const matches = response.data.match(regex);
-    //   if (matches) {
-    //     const id = parseInt(matches[1]);
-    //     tmp_prog_mst.progId = id;
-    //   }
-    // });
+		axios.post("/diagram/project", tmp_prog_mst, { maxRedirects: 0})
+			.then(response => {
+				tmp_prog_mst.progId = response.data;
+		})
+		.catch((Error) => {
+			console.log(Error);
+		});
 
-    console.log(tmp_prog_mst);
     const newModel = new ProjectDiagramModel();
     newModel.setProgMst(tmp_prog_mst);
     return newModel;
   }
+
+	public loadProject(progId : Number){
+		//////////////////////////////////
+		this.engine.getLinkFactories().registerFactory(new ArrowLinkFactory());
+		this.engine.getNodeFactories().registerFactory(new OutputNodeFactory());
+		this.engine.getNodeFactories().registerFactory(new FilterNodeFactory());
+		this.engine.getNodeFactories().registerFactory(new SelectNodeFactory());
+		this.engine.getNodeFactories().registerFactory(new MemoNodeFactory());
+
+		const model = new ProjectDiagramModel();
+		this.engine.setModel(model);
+		//////////////////////////////////
+
+		axios.post(`/diagram/project/load/${progId}`, progId, { maxRedirects: 0})
+			.then(response => {
+				console.log('Response data:', response.data);
+				let viewAttr = JSON.parse(response.data.viewAttr);
+				console.log('ViewAttr:', viewAttr);
+				this.engine.getModel().deserializeModel(viewAttr, this.engine);
+			})
+			.catch((Error) => {
+				console.log(Error);
+			});
+
+		// 클릭해야 갱신되는 문제 있음 forceupdate() 하고싶은데 어디서?
+		// 다중 JSON을 불러오는데서 문제가 발생함 ProgMsgDto2로 임시처리
+	}
 
 	public getActiveDiagram(): ProjectDiagramModel {
 		return this.activeModel;

@@ -13,10 +13,8 @@ const root = ReactDOM.createRoot(
 );
 
 render(
-  <React.StrictMode>
-      {/* <ProjectSelection/> */}
-      <BodyWidget app={new App(true)}/>
-  </React.StrictMode>,
+	<ProjectSelection/>,
+      // <BodyWidget app={new App(true)}/>
 	document.getElementById("root")
 );
 

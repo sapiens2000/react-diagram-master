@@ -23,6 +23,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
+import axios from "axios";
 
 export interface BodyWidgetProps {
 	app: App;
@@ -96,9 +97,42 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 		// 		project_json.push(node.serialize());
 		// 	})
 		// }
+
+		// node.progWorkFlowMng = {
+		// 	...node.progWorkFlowMng,
+		// 	flowAttr: JSON.stringify(node.flowAttrInfo.sql)
+		// };
+
+		let projectModel = this.props.app.getDiagramEngine().getModel();
+		let progMstValue: any;
+
+		// prog_mst 추출
+		Object.keys(projectModel).forEach((key) => {
+			if (key in projectModel) {
+				if (key === 'prog_mst') {
+					progMstValue = (projectModel as any)[key];
+				}
+			}
+		});
+		progMstValue = {
+			...progMstValue,
+			viewAttr: JSON.stringify(project_json)
+		};
+		console.log(progMstValue);
+		console.log(`/diagram/project/update/${progMstValue.progId}`);
+		axios.post(`/diagram/project/update/${progMstValue.progId}`, progMstValue, { maxRedirects: 0})
+			.then(response => {
+				console.log(response.data);
+			})
+			.catch((Error) => {
+				console.log(Error);
+		});
 		console.log(project_json);
-		console.log('save project')
-		JSON.stringify(project_json)
+		// console.log("Mst : ", projectProgMst);
+		// console.log(project_json);
+		// console.log('save project')
+		// console.log(JSON.stringify(project_json))
+
 	}
 
 	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +152,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	handleUseChange = (e: any) => {
 		const current_model = this.props.app.getActiveDiagram().setUseYn();
-	} 
+	}
 
 	render() {
 		return (
