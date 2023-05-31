@@ -78,12 +78,6 @@ namespace S {
 
 export class BodyWidget extends React.Component<BodyWidgetProps> {
 
-	loadProject = (project: string) => {
-		const engine = this.props.app.getDiagramEngine()
-		engine.getModel().deserializeModel(JSON.parse(project), engine);
-		this.forceUpdate();
-	}
-
 	handlePlay = () => {
 		console.log('play project')
 		console.log(this.props.app.workflow);
@@ -91,18 +85,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	handleSaveProject = () => {
 		let project_json = this.props.app.getDiagramEngine().getModel().serialize();
-		// let allEntities = this.props.app.getDiagramEngine().getModel().getSelectionEntities();
-		// if (allEntities.length > 0){
-		// 	_.forEach(allEntities, (node) => {
-		// 		project_json.push(node.serialize());
-		// 	})
-		// }
-
-		// node.progWorkFlowMng = {
-		// 	...node.progWorkFlowMng,
-		// 	flowAttr: JSON.stringify(node.flowAttrInfo.sql)
-		// };
-
 		let projectModel = this.props.app.getDiagramEngine().getModel();
 		let progMstValue: any;
 
@@ -114,6 +96,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				}
 			}
 		});
+
 		progMstValue = {
 			...progMstValue,
 			viewAttr: JSON.stringify(project_json)
@@ -127,27 +110,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			.catch((Error) => {
 				console.log(Error);
 		});
-		console.log(project_json);
-		// console.log("Mst : ", projectProgMst);
-		// console.log(project_json);
-		// console.log('save project')
-		// console.log(JSON.stringify(project_json))
-
-	}
-
-	handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// 1st file
-		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e) => {
-			  const result = e?.target?.result;
-			  if (typeof result === 'string') {
-				this.loadProject(result);
-			  }
-			};
-			reader.readAsText(file);
-		}
 	}
 
 	handleUseChange = (e: any) => {
@@ -185,15 +147,9 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 									<SaveOutlinedIcon fontSize='large'  style={{color: 'white'}}/>
 								</IconButton>
 								<IconButton>
-									<label htmlFor="file-input">
 										<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
-									</label>
-									<input
-										id="file-input"
-										type="file"
-										onChange={this.handleSelectFile}
-										style={{ display: 'none'}}
-									/>
+
+
 								</IconButton>
 							</S.ButtonBox>
 						</S.Header>
