@@ -12,6 +12,8 @@ export default class App {
   protected activeModel: ProjectDiagramModel;
 	protected engine: SRD.DiagramEngine;
 
+
+	// 삭제 예정
 	private _workflow: any[] = [];
 	get workflow(): any[] {
 		return this._workflow;
@@ -41,25 +43,26 @@ export default class App {
 
 		// DB에서 model을 불러왔을 때 workflow가 저장되지 않는 문제가 있다
 		// 노드 실행 시퀀스 확인
-    model.registerListener({
-      linksUpdated: (event: any) => {
-				const link = event.link
-        event.link.registerListener({
-          targetPortChanged: (event: any) => {
-							if(event.port.options.alignment == 'left') {
-								let tempFlowList = [link.sourcePort.parent.progWorkFlowMng.flowId,
-																					link.targetPort.parent.progWorkFlowMng.flowId];
-								this._workflow.push(tempFlowList);
-							}
-							else if(event.port.options.alignment == 'right') {
-								let tempFlowList = [link.targetPort.parent.progWorkFlowMng.flowId,
-																					link.sourcePort.parent.progWorkFlowMng.flowId];
-								this._workflow.push(tempFlowList);
-							}
-          }
-        })
-      }
-    });
+		// 연결하는 상황만 고려한 코드, 끊는 상황을 생각하지 않아 유연성이 떨어짐
+    // model.registerListener({
+    //   linksUpdated: (event: any) => {
+		// 		const link = event.link
+    //     event.link.registerListener({
+    //       targetPortChanged: (event: any) => {
+		// 					if(event.port.options.alignment == 'left') {
+		// 						let tempFlowList = [link.sourcePort.parent.progWorkFlowMng.flowId,
+		// 																			link.targetPort.parent.progWorkFlowMng.flowId];
+		// 						this._workflow.push(tempFlowList);
+		// 					}
+		// 					else if(event.port.options.alignment == 'right') {
+		// 						let tempFlowList = [link.targetPort.parent.progWorkFlowMng.flowId,
+		// 																			link.sourcePort.parent.progWorkFlowMng.flowId];
+		// 						this._workflow.push(tempFlowList);
+		// 					}
+    //       }
+    //     })
+    //   }
+    // });
 
     this.engine.setModel(model);
   }

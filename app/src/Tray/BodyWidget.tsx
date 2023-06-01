@@ -152,20 +152,40 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	handlePlay = () => {
 		console.log('play project')
-		console.log(this.props.app.workflow);
+		// const links = model.getLinks();
+		//
+		// for (let key in links) {
+		// 	const link = links[key];
+		// 	const sourceNode = link.getSourcePort().getParent();
+		// 	const targetNode = link.getTargetPort().getParent();
+		// 	console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
+		// 	console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
+		// }
 
-		let chains = this.props.app.workflow.map(a => [...a]);
+		const links = this.props.app.getDiagramEngine().getModel().getLinks();
 
-		for (let i = 0 ; i < chains.length; i++) {
-			for (let j = 0 ; j < chains.length; j++) {
-				if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
-					chains[i] = [...chains[i], ...chains[j].slice(1)];
-					chains[j] = [];
-				}
-			}
+		for (let key in links) {
+			const link = links[key];
+			const sourceNode = link.getSourcePort().getParent();
+			const targetNode = link.getTargetPort().getParent();
+			console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
+			console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
 		}
 
-		console.log(chains.filter(a => a.length > 0));
+		// console.log(this.props.app.workflow);
+		//
+		// let chains = this.props.app.workflow.map(a => [...a]);
+		//
+		// for (let i = 0 ; i < chains.length; i++) {
+		// 	for (let j = 0 ; j < chains.length; j++) {
+		// 		if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
+		// 			chains[i] = [...chains[i], ...chains[j].slice(1)];
+		// 			chains[j] = [];
+		// 		}
+		// 	}
+		// }
+		//
+		// console.log(chains.filter(a => a.length > 0));
 	}
 
 	handleSaveProject = () => {
