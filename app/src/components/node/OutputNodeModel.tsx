@@ -1,14 +1,12 @@
-import { CanvasEngine } from "@projectstorm/react-canvas-core";
 import {
     DefaultPortModel,
     DiagramEngine,
-    DiagramModel,
     NodeModel,
     NodeModelGenerics,
 } from "@projectstorm/react-diagrams";
-import {FilterNode} from "./FilterNode";
+import FilterNodeModel from "./FilterNodeModel";
 import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     dataSet = {
@@ -18,12 +16,11 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     inPort = new DefaultPortModel(true, "in");
     progWorkFlowMng: {
         flowId: number;
-        progId: number;
-        flowSeq: number;
-        flowType: string;
-        flowAttr: {};
-        flowDesc: string;
-        crtdDttm: string;
+        progId: number; 
+        flowSeq: number; 
+        flowType: string; 
+        flowAttr: {}; 
+        crtdDttm: string; 
         updtDttm: string;
     };
 
@@ -31,19 +28,20 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         super({ type: "output" });
         this.addPort(this.inPort);
         this.progWorkFlowMng = {
-            flowId : 3,
+            flowId : -1,
             //tmp
             progId : -1,
             flowSeq : -1,
-            flowType : "output",
+            flowType : "",
             flowAttr : {
+
             },
-            flowDesc : "",
             crtdDttm : "",
             updtDttm : "",
         }
 
         const model = engine.getModel()
+
         if (model instanceof ProjectDiagramModel){
             const progMst = model.getProgMst();
             this.progWorkFlowMng.progId = progMst.progId;
@@ -51,12 +49,14 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             console.log('Invalid model type');
         }
 
-        axios.post("/diagram/project/savenode/" + this.progWorkFlowMng.progId, this.progWorkFlowMng, { maxRedirects: 0})
-        .catch((Error) => {
-          console.log(Error);
-        }).then(response => {
-          console.log(response);
-        });
+        axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, { maxRedirects: 0})
+        .catch((error: any) => {
+          console.log(error);
+        }).then((response: AxiosResponse<string> | void) => {
+            if (response) {
+              this.progWorkFlowMng.flowId = parseInt(response.data);
+            }
+          });
     }
 
     serialize() {
@@ -70,7 +70,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         const link = Object.values(port.getLinks())[0];
         const node = link?.getSourcePort()?.getNode();
 
-        if (node instanceof FilterNode) {
+        if (node instanceof FilterNodeModel) {
             console.log(node.dataSet.value)
             this.setValue(node.dataSet.value)
         }

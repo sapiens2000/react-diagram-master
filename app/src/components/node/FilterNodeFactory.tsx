@@ -1,11 +1,11 @@
 import * as React from "react";
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
 import { DiagramEngine } from "@projectstorm/react-diagrams-core";
-import {FilterNode} from "./FilterNode";
+import {FilterNodeModel} from "./FilterNodeModel";
 import FilterNodeWidget from "./FilterNodeWidget";
 
 class FilterNodeFactory extends AbstractReactFactory<
-    FilterNode,
+    FilterNodeModel,
     DiagramEngine
     > {
     constructor() {
@@ -17,7 +17,7 @@ class FilterNodeFactory extends AbstractReactFactory<
     }
 
     generateModel(event: any) {
-        return new FilterNode(this.engine);
+        return new FilterNodeModel(this.engine);
     }
 }
 

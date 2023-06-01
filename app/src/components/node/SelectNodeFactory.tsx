@@ -2,10 +2,10 @@ import * as React from "react";
 import { AbstractReactFactory } from "@projectstorm/react-canvas-core";
 import { DiagramEngine } from "@projectstorm/react-diagrams-core";
 import SelectWidgetModal from "./SelectNodeWidget";
-import SelectNode from "./SelectNode";
+import SelectNodeModel from "./SelectNodeModel";
 
 class SelectNodeFactory extends AbstractReactFactory<
-    SelectNode,
+    SelectNodeModel,
     DiagramEngine
     > {
     constructor() {
@@ -19,7 +19,7 @@ class SelectNodeFactory extends AbstractReactFactory<
     }
 
     generateModel(event: any) {
-        return new SelectNode(this.engine);
+        return new SelectNodeModel(this.engine);
     }
 }
 

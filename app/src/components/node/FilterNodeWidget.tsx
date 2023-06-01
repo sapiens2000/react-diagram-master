@@ -1,6 +1,6 @@
 import React, {FC, useState, useEffect} from "react";
 import {BaseModel, DiagramEngine} from "@projectstorm/react-diagrams";
-import {FilterNode, Field} from "./FilterNode";
+import {FilterNodeModel, Field} from "./FilterNodeModel";
 
 import {Modal, Container, IconButton, Menu, MenuItem, Typography, Popover, TextareaAutosize} from "@mui/material";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -11,9 +11,10 @@ import FilterModal from "../modal/FilterModal";
 import GetFilteredData from "./GetFilteredData";
 import * as S from "../../adstyled";
 import "../../styles.css";
+import { ContextDelete, ContextCopy, ContextLock } from "./ContextMenuOptions";
 
 export interface FilterNodeWidgetProps {
-	node: FilterNode;
+	node: FilterNodeModel;
 	engine: DiagramEngine;
 }
 
@@ -49,41 +50,18 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 	};
 
 	const handleDelete = () => {
-		node.remove();
-		engine.repaintCanvas();
+		ContextDelete(engine, node)
+		setContextMenu(null);
 	}
 
 	const handleCopy = () => {
-		// need connection with db and copy data set
-		node.setSelected(true);
-		let offset = { x: 100, y: 100 };
-		let model = engine.getModel()
-
-		let target = model.getSelectedEntities()
-
-		if(target.length > 0){
-			let newNode = target[0].clone()
-
-			newNode.setPosition(newNode.getX() + offset.x, newNode.getY() + offset.y);
-			model.addNode(newNode);
-			(newNode as BaseModel).setSelected(false);
-		}
-		node.setSelected(false);
+		ContextCopy(engine, node);
 		setContextMenu(null);
-
-		console.log('copy')
-		engine.repaintCanvas();
 	}
 
 	const handleLock = () => {
-		if(node.isLocked() == true)
-			node.setLocked(true)
-		else
-			node.setLocked(false)
-
-		console.log('set lock')
+		ContextLock(engine, node)
 		setContextMenu(null);
-		engine.repaintCanvas();
 	}
 
 	const handleContextClose = () => {
