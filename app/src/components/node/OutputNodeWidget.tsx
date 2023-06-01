@@ -38,18 +38,19 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
                   mouseX: event.clientX + 2,
                   mouseY: event.clientY - 6,
                 }
-              : 
+              :
                 null,
           );
         };
 
     const renderModal = () => {
         return (
-          <OutputModal
-            dataSet={null}
-            progWorkFlowMng={node.progWorkFlowMng}
-            setOnModal={setOnModal}
-          />
+					<div></div>
+          // <OutputModal
+          //   dataSet={null}
+          //   progWorkFlowMng={node.progWorkFlowMng}
+          //   setOnModal={setOnModal}
+          // />
         );
       };
 
@@ -69,8 +70,8 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     }
 
 	return (
-        <div className="output" 
-        onDoubleClick={handleModalOpen} 
+        <div className="output"
+        onDoubleClick={handleModalOpen}
         onContextMenu={handleContextMenu}>
             <S.Widget>
                 <S.InPort
