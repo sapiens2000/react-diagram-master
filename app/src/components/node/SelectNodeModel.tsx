@@ -86,13 +86,15 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
 	serialize() {
 		return {
 			...super.serialize(),
-			flowAttrInfo: this.flowAttrInfo
+			flowAttrInfo: this.flowAttrInfo,
+			progWorkFlowMng: this.progWorkFlowMng
 		};
 	}
 
 	deserialize(event: DeserializeEvent<this>) {
 		super.deserialize(event);
 		this.flowAttrInfo = event.data.flowAttrInfo;
+		this.progWorkFlowMng = event.data.progWorkFlowMng;
 	}
 }
 

@@ -80,13 +80,15 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
 	serialize() {
 		return {
 			...super.serialize(),
-			fieldStates : this.fieldStates
+			fieldStates : this.fieldStates,
+			progWorkFlowMng : this.progWorkFlowMng
 		};
 	}
 
 	deserialize(event: DeserializeEvent<this>) {
 		super.deserialize(event);
 		this.fieldStates = event.data.fieldStates;
+		this.progWorkFlowMng = event.data.progWorkFlowMng;
 	}
 
 	getFlowAttr(port: DefaultPortModel): void {

@@ -7,6 +7,7 @@ import {
 import FilterNodeModel from "./FilterNodeModel";
 import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
 import axios, { AxiosResponse } from "axios";
+import {DeserializeEvent} from "@projectstorm/react-canvas-core";
 
 export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     dataSet = {
@@ -16,11 +17,11 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     inPort = new DefaultPortModel(true, "in");
     progWorkFlowMng: {
         flowId: number;
-        progId: number; 
-        flowSeq: number; 
-        flowType: string; 
-        flowAttr: {}; 
-        crtdDttm: string; 
+        progId: number;
+        flowSeq: number;
+        flowType: string;
+        flowAttr: {};
+        crtdDttm: string;
         updtDttm: string;
     };
 
@@ -62,9 +63,16 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     serialize() {
         return {
             ...super.serialize(),
-            value: this.dataSet.value
+            value: this.dataSet.value,
+						progWorkFlowMng: this.progWorkFlowMng
         };
     }
+
+	deserialize(event: DeserializeEvent<this>) {
+		super.deserialize(event);
+		this.dataSet.value = event.data.value;
+		this.progWorkFlowMng = event.data.progWorkFlowMng;
+	}
 
     getNumber(port: DefaultPortModel): void {
         const link = Object.values(port.getLinks())[0];
