@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import '../../App.css';
 import styled from "@emotion/styled";
-import { 
-    DataGrid, 
-    GridColDef, 
+import {
+    DataGrid,
+    GridColDef,
     GridRowsProp,
 } from '@mui/x-data-grid';
 import EditableDataGrid from "./Datagrid";
@@ -43,7 +43,7 @@ export interface OutputModalProps {
     setCurAttr: (data: any) => void;
 }
 
-// hard codded  
+// hard codded
 const fields = ["LOG_DATE", "LOG_TIME", "LOG_USER_ID", "LOG_PAY_ACC"];
 const filter_test_data = [
     {
@@ -80,7 +80,7 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
             console.log(updatedProgWorkFlow)
             props.setCurAttr(updatedProgWorkFlow)
         });
-            
+
         alert("save");
     };
 
@@ -111,9 +111,9 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                 }}>
                     <Grid container spacing={2} >
                         <Grid item xs={2} alignItems="center">
-                            <Typography style={{ 
-                                display: "flex", 
-                                alignItems: "center", 
+                            <Typography style={{
+                                display: "flex",
+                                alignItems: "center",
                                 height: "100%" ,
                                 justifyContent: "center"
                             }}>유형</Typography>
@@ -139,9 +139,9 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                 }}>
                 <Grid container spacing={2}>
                 <Grid item xs={2} alignItems="center">
-                            <Typography style={{ 
-                                display: "flex", 
-                                alignItems: "center", 
+                            <Typography style={{
+                                display: "flex",
+                                alignItems: "center",
                                 height: "100%" ,
                                 justifyContent: "center"
                             }}>테이블</Typography>
@@ -161,23 +161,23 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                     </Grid>
                 </Grid>
                 </div>
-                <div style={{ 
-                    height: 300, 
+                <div style={{
+                    height: 300,
                     width: '100%' ,
                     marginTop: '10px'
                 }}>
                     <EditableDataGrid rows={props.curRows} setCurRows={props.setCurRows}/>
                 </div>
-                <ButtonBox style={{ 
-                    marginTop: '10px', 
+                <ButtonBox style={{
+                    marginTop: '10px',
                     overflow: 'hidden'
                 }}>
-                    <Button 
+                    <Button
                     style={{
                         float: 'right'
                     }}
                     onClick={() => props.setOnModal(false)} variant="text">닫기</Button>
-                    <Button 
+                    <Button
                     style={{
                         float: 'right'
                     }}
@@ -185,7 +185,7 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                 </ButtonBox>
             </Container>
         </Modal>
-        
+
     );
 };
 
