@@ -10,7 +10,7 @@ import SelectNodeModel from '../components/node/SelectNode';
 import OutputNodeModel from '../components/node/OutputNodeModel';
 import FilterNode from '../components/node/FilterNode';
 import MemoNodeModel from '../components/node/MemoNodeModel';
-import { IconButton } from '@mui/material';
+import {Grid, IconButton, Modal, Typography} from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
@@ -24,6 +24,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
 import axios from "axios";
+import {Box} from "@mui/system";
+import Button from "@mui/material/Button";
 
 export interface BodyWidgetProps {
 	app: App;
@@ -74,9 +76,52 @@ namespace S {
 		justify-content: flex-end;
 		align-items: center;
 	`
+	export const Style = {
+		position: 'absolute' as 'absolute',
+		top: '50%',
+		left: '50%',
+		transform: 'translate(-50%, -50%)',
+		width: 300,
+		bgcolor: 'background.paper',
+		border: '2px solid #000',
+		boxShadow: 24,
+		p: 4,
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	};
+
+	export const Input = styled.input`
+  width: 200px; /* 또는 원하는 너비 */
+  height: 20px; /* 또는 원하는 높이 */
+  padding: 10px;
+`;
 }
 
 export class BodyWidget extends React.Component<BodyWidgetProps> {
+
+	state = {
+		open: false,
+		projectId: -1,
+	}
+
+	// Functions for Modal handling
+	handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.setState({projectId: Number(e.target.value)});
+	};
+
+	handleLoadProject = () => {
+		console.log("Confirmed project id: ", this.state.projectId);
+		this.handleClose();
+	};
+
+	handleOpen = () => {
+		this.setState({open: true});
+	}
+
+	handleClose = () => {
+		this.setState({open: false});
+	}
 
 	handlePlay = () => {
 		console.log('play project')
@@ -119,6 +164,34 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	render() {
 		return (
 			<S.Body>
+				<Modal
+					open={this.state.open}
+					onClose={this.handleClose}
+					aria-labelledby="modal-modal-title"
+					aria-describedby="modal-modal-description"
+				>
+					<Box sx={S.Style}>
+						<Grid container spacing={3} direction="column" justifyContent="center" alignItems="center" alignContent="center">
+							<Grid item xs={12}>
+								<Typography id="modal-modal-title" variant="h6" component="h2">
+									불러올 프로젝트의 ID 입력
+								</Typography>
+							</Grid>
+							<Grid item xs={12}>
+								<S.Input type="number" onChange={this.handleInputChange}/>
+							</Grid>
+							<Grid item xs={12}>
+								<Button
+									variant="contained"
+									color="primary"
+									onClick={this.handleLoadProject}
+								>
+									확인
+								</Button>
+							</Grid>
+						</Grid>
+					</Box>
+				</Modal>
 				<S.Content>
 					<TrayWidget>
 						<div>
@@ -146,10 +219,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								<IconButton onClick={this.handleSaveProject}>
 									<SaveOutlinedIcon fontSize='large'  style={{color: 'white'}}/>
 								</IconButton>
-								<IconButton>
+								<IconButton onClick={this.handleOpen}>
 										<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
-
-
 								</IconButton>
 							</S.ButtonBox>
 						</S.Header>
