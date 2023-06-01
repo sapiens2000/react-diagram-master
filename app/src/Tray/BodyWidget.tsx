@@ -82,7 +82,7 @@ namespace S {
 		left: '50%',
 		transform: 'translate(-50%, -50%)',
 		width: 300,
-		bgcolor: 'background.paper',
+		bgcolor: 'white',
 		border: '2px solid #000',
 		boxShadow: 24,
 		p: 4,
@@ -113,6 +113,33 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	handleLoadProject = () => {
 		console.log("Confirmed project id: ", this.state.projectId);
 		this.handleClose();
+
+		let projectModel = this.props.app.getDiagramEngine().getModel();
+		let progMstValue: any;
+
+		// prog_mst 추출
+		Object.keys(projectModel).forEach((key) => {
+			if (key in projectModel) {
+				if (key === 'prog_mst') {
+					progMstValue = (projectModel as any)[key];
+				}
+			}
+		});
+
+		axios.post(`/diagram/project/load/${this.state.projectId}`, this.state.projectId, {maxRedirects: 0})
+			.then(response => {
+				console.log('Response data:', response.data);
+
+				let viewAttr = JSON.parse(response.data.viewAttr);
+				console.log('ViewAttr: ', viewAttr);
+				const newModel = new ProjectDiagramModel();
+				newModel.setProgMst(response.data);
+				this.props.app.getDiagramEngine().getModel().deserializeModel(
+					viewAttr, this.props.app.getDiagramEngine());
+			})
+			.catch((Error) => {
+				console.log(Error);
+			});
 	};
 
 	handleOpen = () => {
@@ -126,6 +153,19 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 	handlePlay = () => {
 		console.log('play project')
 		console.log(this.props.app.workflow);
+
+		let chains = this.props.app.workflow.map(a => [...a]);
+
+		for (let i = 0 ; i < chains.length; i++) {
+			for (let j = 0 ; j < chains.length; j++) {
+				if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
+					chains[i] = [...chains[i], ...chains[j].slice(1)];
+					chains[j] = [];
+				}
+			}
+		}
+
+		console.log(chains.filter(a => a.length > 0));
 	}
 
 	handleSaveProject = () => {

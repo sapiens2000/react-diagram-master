@@ -39,6 +39,7 @@ export default class App {
 
     const model = this.makeNewProg();
 
+		// DB에서 model을 불러왔을 때 workflow가 저장되지 않는 문제가 있다
 		// 노드 실행 시퀀스 확인
     model.registerListener({
       linksUpdated: (event: any) => {
