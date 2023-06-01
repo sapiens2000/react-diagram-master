@@ -94,21 +94,19 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 		else {
 			node.progWorkFlowMng = {
 				...node.progWorkFlowMng,
-				flowAttr: JSON.stringify(node.flowAttrInfo.sql)
+				flowAttr: JSON.stringify(node.flowAttrInfo)
 			};
 			console.log('Sending data:', JSON.stringify(node.progWorkFlowMng, null, 2));
 			const fetchData = async () => {
 				try {
-					const response = await axios.post("/diagram/project/savenode/" + (engine.getModel() as ProjectDiagramModel).getProgId(),
-						node.progWorkFlowMng
-					);
+					const response =
+						await axios.post(`/diagram/project/update-node/${node.progWorkFlowMng.progId}/${node.progWorkFlowMng.flowId}`
+							, node.progWorkFlowMng, {maxRedirects: 0});
 					console.log("Response data:", response.data);
-					setData(response.data); // 받은 데이터를 상태로 저장
 				} catch (error) {
 					console.error("Error fetching data:", error);
 				}
 			};
-
 			fetchData();
 		}
 	}, [sqlChanged]);

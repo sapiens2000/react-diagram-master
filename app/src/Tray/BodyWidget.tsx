@@ -8,7 +8,7 @@ import { WorkCanvasWidget } from '../WorkCanvasWidget';
 import App from '../App';
 import SelectNodeModel from '../components/node/SelectNodeModel';
 import OutputNodeModel from '../components/node/OutputNodeModel';
-import FilterNode from '../components/node/FilterNodeModel';
+import FilterNodeModel from '../components/node/FilterNodeModel';
 import MemoNodeModel from '../components/node/MemoNodeModel';
 import {Grid, IconButton, Modal, Typography} from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
@@ -141,7 +141,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				}
 			}
 		});
-
+		console.log(project_json);
 		progMstValue = {
 			...progMstValue,
 			viewAttr: JSON.stringify(project_json)
@@ -229,14 +229,14 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								var data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
 								var nodesCount = _.keys(this.props.app.getDiagramEngine().getModel().getNodes()).length;
 
-								var node: FilterNode | SelectNodeModel | OutputNodeModel | MemoNodeModel= null;
+								var node: FilterNodeModel | SelectNodeModel | OutputNodeModel | MemoNodeModel= null;
 
 								if (data.type === 'select'){
 									node = new SelectNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'output'){
 									node = new OutputNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'filter'){
-									node = new FilterNode(this.props.app.getDiagramEngine());
+									node = new FilterNodeModel(this.props.app.getDiagramEngine());
 								} else if (data.type === 'memo') {
 									node = new MemoNodeModel(this.props.app.getDiagramEngine());
 								}

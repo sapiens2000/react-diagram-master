@@ -12,6 +12,7 @@ import GetFilteredData from "./GetFilteredData";
 import * as S from "../../adstyled";
 import "../../styles.css";
 import { ContextDelete, ContextCopy, ContextLock } from "./ContextMenuOptions";
+import axios from "axios";
 
 export interface FilterNodeWidgetProps {
 	node: FilterNodeModel;
@@ -108,11 +109,33 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 			return;
 		}
 		else {
+			let mergedObject: any = {
+				"col_info": node.selectFlowAttrInfo.col,
+			};
+
+			for (let key in node.fieldStates) {
+				if (node.fieldStates.hasOwnProperty(key) && key !== 'col' && key !== '') {
+					mergedObject[key] = Object.values(node.fieldStates[key]);
+				}
+			}
+
 			node.progWorkFlowMng = {
 				...node.progWorkFlowMng,
-				flowAttr: JSON.stringify(node.fieldStates)
+				flowAttr: JSON.stringify(mergedObject)
 			};
 			console.log(node.progWorkFlowMng);
+			const fetchData = async () => {
+				try {
+					const response =
+						await axios.post(`/diagram/project/update-node/${node.progWorkFlowMng.progId}/${node.progWorkFlowMng.flowId}`
+							, node.progWorkFlowMng, {maxRedirects: 0});
+					console.log("Response data:", response.data);
+				} catch (error) {
+					console.error("Error fetching data:", error);
+				}
+			};
+
+			fetchData();
 		}
 	}, [fieldChanged]);
 

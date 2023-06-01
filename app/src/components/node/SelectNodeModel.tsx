@@ -21,11 +21,11 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
 
 	progWorkFlowMng: {
         flowId: number;
-        progId: number; 
-        flowSeq: number; 
-        flowType: string; 
-        flowAttr: {}; 
-        crtdDttm: string; 
+        progId: number;
+        flowSeq: number;
+        flowType: string;
+        flowAttr: {};
+        crtdDttm: string;
         updtDttm: string;
     };
 
@@ -44,14 +44,14 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
             flowId : -1,
             //tmp
             progId : -1,
-            flowSeq : -1,
-            flowType : "",
+            flowSeq : 1,
+            flowType : "select",
             flowAttr : {
 
             },
             crtdDttm : "",
             updtDttm : "",
-        }  
+        }
 
         const model = engine.getModel()
         if (model instanceof ProjectDiagramModel){
@@ -61,14 +61,16 @@ export class SelectNodeModel extends NodeModel<NodeModelGenerics>{
             console.log('Invalid model type');
         }
 
-		axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, { maxRedirects: 0})
-        .catch((error: any) => {
-          console.log(error);
-        }).then((response: AxiosResponse<string> | void) => {
-            if (response) {
-              this.progWorkFlowMng.flowId = parseInt(response.data);
-            }
-        });
+				console.log(this.progWorkFlowMng.progId);
+
+				axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, { maxRedirects: 0})
+						.catch((error: any) => {
+							console.log(error);
+						}).then((response: AxiosResponse<string> | void) => {
+								if (response) {
+									this.progWorkFlowMng.flowId = parseInt(response.data);
+								}
+						});
 	}
 
 	setFlowAttr(newAttr: FlowAttr) {

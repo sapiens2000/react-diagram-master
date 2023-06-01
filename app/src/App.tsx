@@ -63,30 +63,31 @@ export default class App {
     this.engine.setModel(model);
   }
 
-  public makeNewProg(): ProjectDiagramModel{
-    var tmp_prog_mst = {
-        progId: 0,
-        progNm: "new project",
-        progDesc: "",
-        viewAttr: {},
-        useYn: false,
-        crtdDttm: "",
-        updtDttm: "",
-        dltDttm: ""
-      }
+  public makeNewProg(): ProjectDiagramModel {
+		var tmp_prog_mst = {
+			progId: 0,
+			progNm: "new project",
+			progDesc: "",
+			viewAttr: {},
+			useYn: false,
+			crtdDttm: "",
+			updtDttm: "",
+			dltDttm: ""
+		}
 
-		axios.post("/diagram/project", tmp_prog_mst, { maxRedirects: 0})
+		axios.post("/diagram/project", tmp_prog_mst, {maxRedirects: 0})
 			.then(response => {
 				tmp_prog_mst.progId = response.data;
-		})
-		.catch((Error) => {
-			console.log(Error);
-		});
+				console.log(tmp_prog_mst);
+			})
+			.catch((Error) => {
+				console.log(Error);
+			});
 
-    const newModel = new ProjectDiagramModel();
-    newModel.setProgMst(tmp_prog_mst);
-    return newModel;
-  }
+		const newModel = new ProjectDiagramModel();
+		newModel.setProgMst(tmp_prog_mst);
+		return newModel;
+	}
 
 	public loadProject(progId : Number){
 		//////////////////////////////////
@@ -103,8 +104,12 @@ export default class App {
 		axios.post(`/diagram/project/load/${progId}`, progId, { maxRedirects: 0})
 			.then(response => {
 				console.log('Response data:', response.data);
+
 				let viewAttr = JSON.parse(response.data.viewAttr);
 				console.log('ViewAttr:', viewAttr);
+				const newModel = new ProjectDiagramModel();
+				newModel.setProgMst(response.data);
+				this.engine.setModel(newModel);
 				this.engine.getModel().deserializeModel(viewAttr, this.engine);
 			})
 			.catch((Error) => {

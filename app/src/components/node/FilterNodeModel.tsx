@@ -13,7 +13,6 @@ export interface Field {
 }
 
 export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
-	filteredData = [{}];
 	dataSet = {
 		value : [''],
 		op : '',
@@ -22,12 +21,13 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
 
 	progWorkFlowMng: {
         flowId: number;
-        progId: number; 
-        flowSeq: number; 
-        flowType: string; 
-        flowAttr: {}; 
-        crtdDttm: string; 
+        progId: number;
+        flowSeq: number;
+        flowType: string;
+        flowAttr: {};
+        crtdDttm: string;
         updtDttm: string;
+				dltDttm: string;
     };
 
 	fieldStates: Field | null = null;
@@ -49,16 +49,18 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
             //tmp
             progId : -1,
             flowSeq : -1,
-            flowType : "",
+            flowType : "filter",
             flowAttr : {
 
             },
             crtdDttm : "",
             updtDttm : "",
-        }  
+						dltDttm : ""
+        }
 
         const model = engine.getModel()
         if (model instanceof ProjectDiagramModel){
+						console.log(model);
             const progMst = model.getProgMst();
             this.progWorkFlowMng.progId = progMst.progId;
         } else{
@@ -71,7 +73,6 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
         }).then((response: AxiosResponse<string> | void) => {
             if (response) {
               this.progWorkFlowMng.flowId = parseInt(response.data);
-			  console.log(this.progWorkFlowMng)
             }
         });
 	}
