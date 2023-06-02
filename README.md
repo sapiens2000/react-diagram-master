@@ -6,6 +6,19 @@
 
 ex) 94번 노드, 95번, 96번 >> [[94, 95, 96]]
 
+불러오기를 실행했을 때 Deserialize 내용을 아래의 respose.data가 덮어써서 새로운 flowId를 할당하는 버그가 있음
+이를 위해 프로젝트를 불러왔는지를 체크하여 생성하고자 메소드 init()으로 분러함
+// if(this.progWorkFlowMng.flowId == -1) {
+// 	axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, {maxRedirects: 0})
+// 		.catch((error: any) => {
+// 			console.log(error);
+// 		}).then((response: AxiosResponse<string> | void) => {
+// 		if (response) {
+// 			this.progWorkFlowMng.flowId = parseInt(response.data);
+// 		}
+// 	});
+// }
+
 
 6/1 :: 
 
