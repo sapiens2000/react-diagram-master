@@ -12,8 +12,15 @@ export default class App {
   protected activeModel: ProjectDiagramModel;
 	protected engine: SRD.DiagramEngine;
 
+	private _isLoaded: boolean = false;
 
-	// 삭제 예정
+	get isLoaded() : boolean {
+		return this._isLoaded;
+	}
+	set isLoaded(value : boolean) {
+		this._isLoaded = value;
+	}
+
 	private _workflow: any[] = [];
 	get workflow(): any[] {
 		return this._workflow;
@@ -25,7 +32,9 @@ export default class App {
 		if(newProject == 0){
       this.newProject();
     }else{
+			this.isLoaded = true;
       this.loadProject(newProject);
+			this.isLoaded = false;
     }
 	}
 
@@ -105,6 +114,8 @@ export default class App {
 		this.engine.setModel(model);
 		//////////////////////////////////
 
+
+
 		axios.post(`/diagram/project/load/${progId}`, progId, { maxRedirects: 0})
 			.then(response => {
 				console.log('Response data:', response.data);
@@ -119,7 +130,6 @@ export default class App {
 			.catch((Error) => {
 				console.log(Error);
 			});
-
 		// 클릭해야 갱신되는 문제 있음 forceupdate() 하고싶은데 어디서?
 		// 다중 JSON을 불러오는데서 문제가 발생함 ProgMsgDto2로 임시처리
 	}

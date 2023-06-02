@@ -114,6 +114,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 		console.log("Confirmed project id: ", this.state.projectId);
 		this.handleClose();
 
+		this.props.app.isLoaded = true;
+
 		let projectModel = this.props.app.getDiagramEngine().getModel();
 		let progMstValue: any;
 
@@ -140,6 +142,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			.catch((Error) => {
 				console.log(Error);
 			});
+
+		this.props.app.isLoaded = false;
 	};
 
 	handleOpen = () => {
@@ -152,40 +156,71 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 	handlePlay = () => {
 		console.log('play project')
-		// const links = model.getLinks();
-		//
-		// for (let key in links) {
-		// 	const link = links[key];
-		// 	const sourceNode = link.getSourcePort().getParent();
-		// 	const targetNode = link.getTargetPort().getParent();
-		// 	console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
-		// 	console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
-		// }
 
+		this.props.app.workflow.splice(0)
 		const links = this.props.app.getDiagramEngine().getModel().getLinks();
 
 		for (let key in links) {
 			const link = links[key];
-			const sourceNode = link.getSourcePort().getParent();
-			const targetNode = link.getTargetPort().getParent();
+
+			let targetPort = link.getTargetPort();
+			let sourceNode = link.getSourcePort().getParent();
+			let targetNode = link.getTargetPort().getParent();
+
+			var tempSourceNode : SelectNodeModel | FilterNodeModel | OutputNodeModel = null;
+			var tempTargetNode : SelectNodeModel | FilterNodeModel | OutputNodeModel = null;
+
+			if (sourceNode instanceof SelectNodeModel) {
+				console.log(`sourceNodeModel property: $ ${sourceNode.progWorkFlowMng.flowId}`);
+				tempSourceNode = sourceNode;
+			} else if (sourceNode instanceof FilterNodeModel) {
+				console.log(`sourceNodeModel property: $ ${sourceNode.progWorkFlowMng.flowId}`);
+				tempSourceNode = sourceNode;
+			} else if (sourceNode instanceof OutputNodeModel) {
+				console.log(`sourceNodeModel property: $ ${sourceNode.progWorkFlowMng.flowId}`);
+				tempSourceNode = sourceNode;
+			}
+
+			if (targetNode instanceof FilterNodeModel) {
+				console.log(`targetNodeModel property: ${targetNode.progWorkFlowMng.flowId}`);
+				tempTargetNode = targetNode;
+			} else if (targetNode instanceof SelectNodeModel) {
+				console.log(`targetNodeModel property: ${targetNode.progWorkFlowMng.flowId}`);
+				tempTargetNode = targetNode;
+			} else if (targetNode instanceof OutputNodeModel) {
+				console.log(`targetNodeModel property: ${targetNode.progWorkFlowMng.flowId}`);
+				tempTargetNode = targetNode;
+			}
+
+			let targetPortAlignment = targetPort.getOptions().alignment;
+
+			if(targetPortAlignment == 'left') {
+				let tempFlowList = [tempSourceNode.progWorkFlowMng.flowId, tempTargetNode.progWorkFlowMng.flowId];
+				this.props.app.workflow.push(tempFlowList);
+			}
+			else if(targetPortAlignment == 'right') {
+				let tempFlowList = [tempTargetNode.progWorkFlowMng.flowId, tempSourceNode.progWorkFlowMng.flowId];
+				this.props.app.workflow.push(tempFlowList);
+			}
+
+			console.log(this.props.app.workflow);
+
 			console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
 			console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
 		}
 
-		// console.log(this.props.app.workflow);
-		//
-		// let chains = this.props.app.workflow.map(a => [...a]);
-		//
-		// for (let i = 0 ; i < chains.length; i++) {
-		// 	for (let j = 0 ; j < chains.length; j++) {
-		// 		if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
-		// 			chains[i] = [...chains[i], ...chains[j].slice(1)];
-		// 			chains[j] = [];
-		// 		}
-		// 	}
-		// }
-		//
-		// console.log(chains.filter(a => a.length > 0));
+		let chains = this.props.app.workflow.map(a => [...a]);
+
+		for (let i = 0 ; i < chains.length; i++) {
+			for (let j = 0 ; j < chains.length; j++) {
+				if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
+					chains[i] = [...chains[i], ...chains[j].slice(1)];
+					chains[j] = [];
+				}
+			}
+		}
+
+		console.log(chains.filter(a => a.length > 0));
 	}
 
 	handleSaveProject = () => {
@@ -293,10 +328,16 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 								if (data.type === 'select'){
 									node = new SelectNodeModel(this.props.app.getDiagramEngine());
+									node.setIsLoadedCallback(() => this.props.app.isLoaded);
+									node.init();
 								} else if (data.type === 'output'){
 									node = new OutputNodeModel(this.props.app.getDiagramEngine());
+									node.setIsLoadedCallback(() => this.props.app.isLoaded);
+									node.init();
 								} else if (data.type === 'filter'){
 									node = new FilterNodeModel(this.props.app.getDiagramEngine());
+									node.setIsLoadedCallback(() => this.props.app.isLoaded);
+									node.init();
 								} else if (data.type === 'memo') {
 									node = new MemoNodeModel(this.props.app.getDiagramEngine());
 								}

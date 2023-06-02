@@ -155,7 +155,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 				<Container style={{position: 'absolute', top: 15, right: 0}}>
 					<IconButton onClick={handleModalOpen}><FilterAltIcon fontSize='large'/></IconButton>
 					{filterModalOpened && (
-						<ModalPortal closePortal={handleModalClose} flag={"filter"} id={node.progWorkFlowMng.progId}>
+						<ModalPortal closePortal={handleModalClose} flag={"filter"} id={node.getOptions().id}>
 							<FilterModal
 								dataSet={node.dataSet}
 								onFieldStatesUpdate={handleFieldStatesUpdate}
@@ -182,7 +182,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 				<MenuItem onClick={handleCopy}>복사</MenuItem>
 				<MenuItem onClick={handleLock}>잠금</MenuItem>
 			</Menu>
-			<div id={`filter-modal-${node.progWorkFlowMng.progId}`}></div>
+			<div id={`filter-modal-${node.getOptions().id}`}></div>
 		</div>
 	);
 }

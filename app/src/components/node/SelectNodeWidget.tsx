@@ -122,7 +122,7 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 				<Container style={{position: 'absolute', top: 15, right: 0}}>
 					<IconButton onClick={handleModalOpen}><StorageIcon fontSize="large" /></IconButton>
 					{selectModalOpened && (
-						<ModalPortal closePortal={handleModalClose} flag={"select"} id={node.progWorkFlowMng.progId}>
+						<ModalPortal closePortal={handleModalClose} flag={"select"} id={node.getOptions().id}>
 							<SelectModal flowAttrInfo={node.flowAttrInfo} onFlowAttrInfoChange={handleFlowAttrInfoChange}/>
 						</ModalPortal>
 					)}
@@ -143,7 +143,7 @@ const SelectNodeWidget : FC<SelectNodeWidgetAdvancedProps> = ({ engine, node}) =
 				<MenuItem onClick={handleCopy}>복사</MenuItem>
 				<MenuItem onClick={handleLock}>잠금</MenuItem>
 			</Menu>
-			<div id={`select-modal-${node.progWorkFlowMng.progId}`}></div>
+			<div id={`select-modal-${node.getOptions().id}`}></div>
 		</div>
 	);
 };
