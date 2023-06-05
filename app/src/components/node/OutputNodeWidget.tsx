@@ -1,7 +1,7 @@
-import React, {FC, useState} from "react";
-import { BaseModel, DiagramEngine } from "@projectstorm/react-diagrams";
+import React, {FC, useEffect, useState} from "react";
+import {DiagramEngine } from "@projectstorm/react-diagrams";
 import {OutputNodeModel} from "./OutputNodeModel";
-import {Modal, Container, IconButton, Typography, Popover, TextareaAutosize} from "@mui/material";
+import { Container} from "@mui/material";
 import OutputModal from "../modal/OutputModal";
 import * as S from "../../adstyled";
 import EastIcon from '@mui/icons-material/East';
@@ -14,13 +14,32 @@ export interface OutputNodeWidgetProps {
     engine: DiagramEngine;
 }
 
-
 const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
     const [contextMenu, setContextMenu] = React.useState<{
+      
         mouseX: number;
         mouseY: number;
       } | null>(null);
+    
+
+    useEffect(() => {
+    //   const fetchData = async () => {
+		// 		try {
+		// 			const response =
+		// 				await axios.post(`/diagram/project/update-node/${node.progWorkFlowMng.progId}/${node.progWorkFlowMng.flowId}`
+		// 					, node.progWorkFlowMng, {maxRedirects: 0});
+		// 			console.log("Response data:", response.data);
+		// 		} catch (error) {
+		// 			console.error("Error fetching data:", error);
+		// 		}
+		// 	};
+		// 	fetchData();
+    }, []);
+
+
+    node.refresh();
+    console.log(node.selectFlowAttrInfo);
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -45,12 +64,12 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 
     const renderModal = () => {
         return (
-					<div></div>
-          // <OutputModal
-          //   dataSet={null}
-          //   progWorkFlowMng={node.progWorkFlowMng}
-          //   setOnModal={setOnModal}
-          // />
+          <OutputModal
+            //flowAttrInfo={node.flowAttrInfo}
+            progWorkFlowMng={node.progWorkFlowMng}
+            setOnModal={setOnModal}
+            gridRows={node.test_rows}
+          />
         );
       };
 

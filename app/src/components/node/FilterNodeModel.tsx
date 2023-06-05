@@ -28,7 +28,7 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
         flowAttr: {};
         crtdDttm: string;
         updtDttm: string;
-				dltDttm: string;
+		dltDttm: string;
     };
 
 	fieldStates: Field | null = null;
@@ -76,12 +76,11 @@ export class FilterNodeModel extends NodeModel<NodeModelGenerics> {
             },
             crtdDttm : "",
             updtDttm : "",
-						dltDttm : ""
+			dltDttm : ""
         }
 
         const model = engine.getModel()
         if (model instanceof ProjectDiagramModel){
-						console.log(model);
             const progMst = model.getProgMst();
             this.progWorkFlowMng.progId = progMst.progId;
         } else{
