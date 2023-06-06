@@ -1,116 +1,112 @@
-import {Container, Typography, Button, Select, MenuItem, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, SelectChangeEvent } from "@mui/material";
-import React, { useCallback, useEffect, useState } from "react";
+import {Container, Typography, Button, Select, MenuItem, Grid,SelectChangeEvent } from "@mui/material";
+import React, { useEffect, useState } from "react";
 
 import '../../App.css';
 import styled from "@emotion/styled";
 import axios from "axios";
-import InsertDataGrid from "./Datagrid";
-
-
-export const Modal = styled.div`
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
-    margin-top: 10px;
-    background: #fff;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-    position: relative;
-    padding: 8px;
-    box-sizing: border-box;
-    text-align: center;
-`;
-
-export const ButtonBox = styled.div`
-    margin-top: 15px;
-`;
+import CustomDataGrid from "./Datagrid";
+import { RowField } from "../node/OutputNodeModel";
 
 const options = ['insert', 'update', 'delete', 'csv'];
 
 export interface OutputModalProps {
-    //flowAttrInfo: any;
     progWorkFlowMng: any;
-    gridRows: any;
     setOnModal: (state: boolean) => void;
+    selectFieldNames: string[];
+    gridRows: any[];
+    setGridRows: (newGridRows: any[]) => void;
 }
 
 const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
     const [curType, setCurType] = useState('');
-    const [gridRows, setGridRows] = useState(props.gridRows);
-    const [curTable, setCurTable] = useState(props.progWorkFlowMng.flowAttr.tableName);
-    const [tables, setTables] = useState([]);
-    const [tableCols, setTableCols] = useState([]);
-    const [rowMappingValues, setRowMappingValues] = useState(props.progWorkFlowMng.flowAttr.col_info);
-    const [pk, setPk] = useState({});
+    const [curGridRows, setCurGridRows] = useState([]);
+    const [curTargetTable, setCurTargetTable] = useState('');
+    const [targetTableList, setTargetTableList] = useState([]);
+    const [targetTableCols, setTargetTableCols] = useState([]);
+    const [targetMappingFields, setTargetMappingFields] = useState([]);
+    const [selectMappingFields, setSelectMappingFields] = useState([]);
+    const [pk, setPk] = useState([]);
+    const [selectFieldNames, setSelectFieldNames] = useState([]);
 
-    async function getTables() {
-        console.log('fetch tables')
+
+    const generateGridRows = (TargetTableColNames: string[]): RowField[] => {
+        return TargetTableColNames.map((fieldName, index) => {
+            return {
+                id: index,
+                tableFieldName: fieldName,
+                mappingField: '',
+                defaultValue: '',
+            };
+        });
+    };
+
+    async function getTargetTables() {
         try {
           const response = await axios.get('/diagram/project/get-tables');
           const data = response.data;
-          setTables(data); 
+          setTargetTableList(data); 
         } catch (error) {
           console.error('Error fetching data:', error);
         }
     }
 
     useEffect(() => {
-        getTables();
-        const getTableCols = async() => await axios.get(`/diagram/project/${curTable}`)
-        .then(response => {
-            console.log(response.data);
-            
-            setTableCols(response.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+        setCurTargetTable(props.progWorkFlowMng.flowAttr.tableName)
         setCurType(props.progWorkFlowMng.flowAttr.type);
-        getTableCols();
+        setSelectFieldNames(props.selectFieldNames)
+
+        const getTargetTableCols = async () => {
+            try {
+              const response = await axios.get(`/diagram/project/${props.progWorkFlowMng.flowAttr.tableName}`);
+              const data = response.data;
+              setTargetTableCols(data);
+            } catch (error) {
+              console.log(error);
+            }
+          };
+
+        const fetchData = async () => {
+            try {
+                await getTargetTables(); 
+                await getTargetTableCols(); 
+                //setGridRows(generateGridRows(selectFieldNames)); 
+            } catch (error) {
+                console.log(error);
+            }
+        };
         
+        if(props.gridRows.length === 0){
+            setCurGridRows(generateGridRows(selectFieldNames));
+        }else{
+            setCurGridRows(props.gridRows);
+        }
+
+        fetchData();
 	}, []);
 
+
     const handleSave = () => {
-        const transformedData: { [key: string]: string | any[]} = {};
-        let rows: any[] = [...gridRows];
+        var curFlowAttr: {
+            [key: string]: any;
+        } = {};
 
-        transformedData['type'] = curType;
-        transformedData['tableName'] = curTable;
-
-        let tmp_col_info: any[]= [];
-
-        rows.map((row: any, index: number) => {
-            const { tableFieldName, type, defaultValue } = row;
-            const mappingValue = rowMappingValues[index+1]; 
-            const finalMappingValue = mappingValue !== undefined ? mappingValue : ''; 
-            tmp_col_info[tableFieldName] = [type, finalMappingValue, defaultValue];
-            return null;
-          });
+        curFlowAttr['type'] = curType; 
+        curFlowAttr['pk'] = ['','']
+        curFlowAttr['tableName'] = curTargetTable;
+        curFlowAttr['col_info'] = [Object.values(targetMappingFields)];
         
-
-          transformedData['col_info'] = tmp_col_info;
-
-          const transformedPk: { [key: string]: string } = {};
-          Object.keys(pk).forEach((index) => {
-            if (pk[index as keyof typeof pk]) {
-              transformedPk[index] = tmp_col_info[index as keyof typeof tmp_col_info];
-            } else {
-              transformedPk[index] = '';
+        const gridData = Object.keys(targetMappingFields).forEach((index: string) => {
+            const idx = parseInt(index) - 1;
+            if (curGridRows[idx]) {
+                curGridRows[idx].mappingField = targetMappingFields[idx+1];
+                const { tableFieldName, mappingField, defaultValue } = curGridRows[idx];
+                curFlowAttr[mappingField] = [defaultValue, tableFieldName];
             }
-          });
-          
-          props.progWorkFlowMng.flowAttr = {
-            ...transformedData,
-            pk: transformedPk,
-          };
-          
+        })
 
-          
-        console.log(props.progWorkFlowMng.flowAttr)
-
+        //props.setGridRows(curGridRows);
+        console.log(props.gridRows)
+        console.log(curFlowAttr);
         alert("save");
     };
 
@@ -132,19 +128,22 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
         props.progWorkFlowMng.flowAttr.type = value
     };
 
-    const handleTable = (event: any, value: string) => {
-        setCurTable(value);
-        props.progWorkFlowMng.flowAttr.tableName = value;
-        const getTableCols = async() => await axios.get(`/diagram/project/${value}`)
-        .then(response => {
-            console.log(response.data);
-            setTableCols(response.data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-        getTableCols();
-    }
+    const handleTable = async (value: string) => {
+        try {
+          setCurTargetTable(value);
+          props.progWorkFlowMng.flowAttr.tableName = value;
+          
+          const response = await axios.get(`/diagram/project/${value}`);
+          const data = response.data;
+          
+          setTargetTableCols(data);
+          if(props.gridRows.length === 0){
+            setCurGridRows(generateGridRows(selectFieldNames));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
     return (
         <Modal>
@@ -194,10 +193,10 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                     <Grid item xs={10}>
                         <Select
                             fullWidth
-                            value={curTable}
-                            onChange={(e) => handleTable(e, e.target.value)}
+                            value={curTargetTable}
+                            onChange={(e) => handleTable(e.target.value)}
                         >
-                            {tables.map((table) => (
+                            {targetTableList.map((table) => (
                                 <MenuItem key={table} value={table}>
                                     {table}
                                 </MenuItem>
@@ -206,24 +205,29 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                     </Grid>
                 </Grid>
                 </div>
-                {curType === 'insert' && (
+                {curType !== 'CSV' && (
                     <div style={{
                     height: 300,
                     width: '100%',
                     marginTop: '10px'
                     }}>
-                    <InsertDataGrid
-                            gridRows={gridRows}
-                            setGridRows={setGridRows}
-                            tableCols={tableCols}
-                            rowMappingValues={rowMappingValues}
-                            setRowMappingValues={setRowMappingValues} 
-                            pk={pk}
-                            setPk={setPk}/>
+                    <CustomDataGrid
+                            gridRows={curGridRows}
+                            setGridRows={setCurGridRows}
+                            filteredTableCols={targetTableCols}
+                            targetTableCols={targetTableCols}
+                            targetMappingFields={targetMappingFields}
+                            setTargetMappingFields={setTargetMappingFields} 
+                            selectMappingFields={selectMappingFields}
+                            setSelectMappingFields={setSelectMappingFields} 
+                            selectFieldNames={selectFieldNames}
+                    />
                     </div>
                 )}
                 {curType === 'csv' && (
-                    <div></div>
+                    <div>
+
+                    </div>
                 )}
                 <ButtonBox style={{
                     marginTop: '10px',
@@ -241,9 +245,29 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                     onClick={handleSave} variant="contained">저장</Button>
                 </ButtonBox>
             </Container>
-        </Modal>
-        
+        </Modal> 
     );
 };
 
 export default OutputModal;
+
+export const Modal = styled.div`
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+    background: #fff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    position: relative;
+    padding: 8px;
+    box-sizing: border-box;
+    text-align: center;
+`;
+
+export const ButtonBox = styled.div`
+    margin-top: 15px;
+`;

@@ -17,12 +17,10 @@ export interface OutputNodeWidgetProps {
 const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     const [onModal, setOnModal] = useState(false);
     const [contextMenu, setContextMenu] = React.useState<{
-      
         mouseX: number;
         mouseY: number;
       } | null>(null);
     
-
     useEffect(() => {
     //   const fetchData = async () => {
 		// 		try {
@@ -38,8 +36,8 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
     }, []);
 
 
-    node.refresh();
-    console.log(node.selectFlowAttrInfo);
+    // node.refresh();
+    // console.log(node.selectFlowAttrInfo);
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -63,12 +61,17 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         };
 
     const renderModal = () => {
+      console.log(node.setGridRows)
+      console.log(node.getFlowAttr)
+      console.log(node.setFlowAttr)
         return (
           <OutputModal
             //flowAttrInfo={node.flowAttrInfo}
             progWorkFlowMng={node.progWorkFlowMng}
             setOnModal={setOnModal}
-            gridRows={node.test_rows}
+            selectFieldNames={node.selectFieldNames}
+            gridRows={node.gridRows}
+            setGridRows={node.setGridRows}
           />
         );
       };

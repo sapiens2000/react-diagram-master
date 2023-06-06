@@ -9,48 +9,23 @@ import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
 import axios, { AxiosResponse } from "axios";
 import {DeserializeEvent} from "@projectstorm/react-canvas-core";
 import SelectNodeModel, { FlowAttr } from "./SelectNodeModel";
-interface RowField {
+
+// const GridrowsToColInfo = (Rows: RowField[]): { [key: string]: string | any[] } => {
+//     const transformedData: { [key: string]: string | any[] } = {};
+  
+//     Rows.forEach((row: any) => {
+//       const { tableFieldName, type, mappingField, defaultValue } = row;
+//       transformedData[tableFieldName] = [type, mappingField, defaultValue];
+//     });
+  
+//     return transformedData;
+//   };
+
+export interface RowField {
     id: number;
     tableFieldName: string;
-    type: string;
     mappingField: string;
     defaultValue: string;
-}
-  
-const generateGridRows = (RowFieldNames: string[]): RowField[] => {
-    return RowFieldNames.map((fieldName, index) => {
-        return {
-            id: index + 1,
-            tableFieldName: fieldName,
-            type: '',
-            mappingField: '',
-            defaultValue: '',
-            pk: 'false'
-        };
-    });
-};
-
-const GridrowsToColInfo = (Rows: RowField[]): { [key: string]: string | any[] } => {
-    const transformedData: { [key: string]: string | any[] } = {};
-  
-    Rows.forEach((row: any) => {
-      const { tableFieldName, type, mappingField, defaultValue } = row;
-      transformedData[tableFieldName] = [type, mappingField, defaultValue];
-    });
-  
-    return transformedData;
-  };
-
-
-const testFieldNames = ['LOG_DATE', 'LOG_TIME', 'LOG_USER_ID', 'LOG_PAY_ACC'];
-
-
-type ColInfo = Array<Array<any>>;
-type flowAttrInfoType = {
-    type: string,
-    pk: {},
-    tableName: string,
-    col_info: ColInfo,
 }
 
 export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
@@ -62,20 +37,10 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     
     flowAttrInfo: {
 		type: string,
-        pk: {},
+        pk: [],
         tableName: string,
-        col_info: ColInfo,
+        col_info: {},
 	}
-
-    progWorkFlowMng: {
-        flowId: number;
-        progId: number;
-        flowSeq: number;
-        flowType: string;
-        flowAttr: flowAttrInfoType;
-        crtdDttm: string;
-        updtDttm: string;
-    };
 
     selectFlowAttrInfo: FlowAttr | null = null;
     test_rows: any;
@@ -100,6 +65,21 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         }
     }
 
+    selectFieldNames = ['user_id','out_pay_name','yyyymmdd'];
+
+    progWorkFlowMng: {
+        flowId: number;
+        progId: number;
+        flowSeq: number;
+        flowType: string;
+        // for dynamically add datas
+        flowAttr: any;
+        crtdDttm: string;
+        updtDttm: string;
+    };
+
+    gridRows: any[];
+
     constructor(readonly engine: DiagramEngine) {
         super({ type: "output" });
         this.addPort(this.inPort);
@@ -111,7 +91,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             flowType : "",
             flowAttr : {
                 type: 'insert',
-                pk: {},
+                pk: [],
                 tableName: '',
                 col_info: []
             },
@@ -119,8 +99,8 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             updtDttm : "",
         }
 
-        this.test_rows = generateGridRows(testFieldNames);
-
+ 
+        this.gridRows = [];
         // default
         // this.flowAttrInfo = { 
         //     type: 'insert',
@@ -151,6 +131,10 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         console.log(this.progWorkFlowMng);
 	}
 
+    setGridRows(newGridRows: any[]){
+        this.gridRows = newGridRows
+    }
+
     getFlowAttr(port: DefaultPortModel): void {
 		let link = Object.values(port.getLinks())[0];
 		let node = link?.getSourcePort()?.getNode();
@@ -175,6 +159,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
     refresh() {
 		this.getFlowAttr(this.inPort);
 	}
+
 }
 
 export default OutputNodeModel;
