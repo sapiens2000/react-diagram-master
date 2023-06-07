@@ -2,6 +2,7 @@ import * as React from 'react';
 import { DataGrid, GridCellParams, GridColDef, } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import {Button,  MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { RowField } from '../node/OutputNodeModel';
 
 export interface DataGridProps {
   gridRows: any;
@@ -104,12 +105,12 @@ export default function CustomDataGrid(props: DataGridProps) {
   const [selectFieldNames, setSelectFieldNames] = useState([]);
   
   useEffect(() => {
-    setGridRows(props.gridRows);
-    setSelectFieldNames(props.selectFieldNames);
+    setGridRows([...props.gridRows]);
+    setSelectFieldNames([...props.selectFieldNames]);
   }, []);
 
   useEffect(() => {
-    setGridRows(props.gridRows);
+    setGridRows([...props.gridRows]);
   }, [props.gridRows]);
 
   const handleRowEdit = (newRow: any, oldRow: any) => {
@@ -123,7 +124,7 @@ export default function CustomDataGrid(props: DataGridProps) {
       return row;
     });
     console.log(updatedRows)
-    setGridRows(updatedRows);
+    setGridRows([...updatedRows]);
     props.setGridRows(updatedRows);
   };
 
@@ -132,6 +133,7 @@ export default function CustomDataGrid(props: DataGridProps) {
       field: 'tableFieldName', 
       headerName: '필터된 테이블 필드', 
       width: 220, 
+      editable: true
       // renderCell: (params) => <RenderDropdownCell {...params}
       // tableCols={props.selectFieldNames}
       // rowMappingFields={props.rowMappingFields}
@@ -183,6 +185,25 @@ export default function CustomDataGrid(props: DataGridProps) {
     props.setGridRows(updatedRows);
   };
 
+
+  const handleRefreshRow = () => {
+
+    const generateGridRows = (TargetTableColNames: string[]): RowField[] => {
+      return TargetTableColNames.map((fieldName, index) => {
+          return {
+              id: index,
+              tableFieldName: fieldName,
+              mappingField: '',
+              defaultValue: '',
+          };
+      });
+  };
+
+    const refreshedRows = [...generateGridRows(selectFieldNames)]
+    setGridRows(refreshedRows);
+    props.setGridRows(refreshedRows);
+  }
+
   const handleRowUpdateError= () => {
 
   }
@@ -192,6 +213,7 @@ export default function CustomDataGrid(props: DataGridProps) {
       <div style={{display: 'flex'}}>
         <AddRowButton handleAddRow={handleAddRow}></AddRowButton>
         <DeleteRowButton handleDeleteRow={handleDeleteRow}></DeleteRowButton>
+        <RefreshRowButton handleRefreshRow={handleRefreshRow}></RefreshRowButton>
       </div>
       <DataGrid
         rows={gridRows}
@@ -215,8 +237,16 @@ const AddRowButton = ({handleAddRow} : any) => {
 
 const DeleteRowButton = ({handleDeleteRow} : any) => {
   return (
-    <Button variant="outlined" onClick={handleDeleteRow}>
+    <Button variant="outlined" onClick={handleDeleteRow} color='error'>
       삭제
+    </Button>
+  );
+};
+
+const RefreshRowButton = ({handleRefreshRow} : any) => {
+  return (
+    <Button variant="outlined" onClick={handleRefreshRow}>
+      초기화
     </Button>
   );
 };
