@@ -27,6 +27,7 @@ import ProjectInfoModal from '../components/modal/ProjectInfoModal';
 import SidePanel from './SidePanel';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
 import { channel } from 'diagnostics_channel';
+import qs from 'qs';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -212,7 +213,7 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 		let chains = this.props.app.workflow.map(a => [...a]);
 
-		console.log(chains);
+
 		for (let i = 0 ; i < chains.length; i++) {
 			for (let j = 0 ; j < chains.length; j++) {
 				if( i != j && chains[i][chains[i].length - 1] == chains[j][0]) {
@@ -222,9 +223,22 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			}
 		}
 
-		console.log(chains.filter(a => a.length > 0));
 		var progId = (this.props.app.getDiagramEngine().getModel() as ProjectDiagramModel).getProgId()
-		const play_seq = async() => await axios.get(`/diagram/project/sql-result/${progId}?flowSeq=${chains[0]}&flowSeq=${chains[1]}&flowSeq=${chains[2]}`)
+		let _flowSeq = chains.filter(item => item.length > 0);
+
+		
+		let tmp_flowSeq = [_flowSeq[0][0].toString(), _flowSeq[0][1].toString(), _flowSeq[0][2].toString()];
+
+		// const encodedFlowSeq = (tmp_flowSeq as string[]).map(seq => encodeURIComponent(seq));
+
+		const play_seq = async() => await axios.get(`/diagram/project/sql-result/${progId}`, {
+			params: {
+				flowSeq: tmp_flowSeq
+			},
+			paramsSerializer: params => {
+				return qs.stringify(params, { arrayFormat: 'repeat' });
+			  }
+		  })
         .then(response => {
             console.log(response.data);
         })
