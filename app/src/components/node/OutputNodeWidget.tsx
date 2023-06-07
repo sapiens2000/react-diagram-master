@@ -61,12 +61,8 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
         };
 
     const renderModal = () => {
-      console.log(node.setGridRows)
-      console.log(node.getFlowAttr)
-      console.log(node.setFlowAttr)
         return (
           <OutputModal
-            //flowAttrInfo={node.flowAttrInfo}
             progWorkFlowMng={node.progWorkFlowMng}
             setOnModal={setOnModal}
             selectFieldNames={node.selectFieldNames}

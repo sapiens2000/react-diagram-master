@@ -26,6 +26,7 @@ import axios from 'axios';
 import ProjectInfoModal from '../components/modal/ProjectInfoModal';
 import SidePanel from './SidePanel';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
+import { channel } from 'diagnostics_channel';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -222,14 +223,15 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 		}
 
 		console.log(chains.filter(a => a.length > 0));
-
-		const play_seq = async() => await axios.get(`/diagram/project/sql-result/${(this.props.app.getDiagramEngine().getModel() as ProjectDiagramModel).getProgId()}`)
+		var progId = (this.props.app.getDiagramEngine().getModel() as ProjectDiagramModel).getProgId()
+		const play_seq = async() => await axios.get(`/diagram/project/sql-result/${progId}?flowSeq=${chains[0]}&flowSeq=${chains[1]}&flowSeq=${chains[2]}`)
         .then(response => {
             console.log(response.data);
         })
         .catch((error) => {
             console.log(error);
         });
+
 		play_seq();
 	}
 
@@ -369,7 +371,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								node.setPosition(point);
 								this.props.app.getDiagramEngine().getModel().addNode(node);
 								this.forceUpdate();
-								console.log('drag stopped')
 							}}
 							onDragOver={(event) => {
 								event.preventDefault();

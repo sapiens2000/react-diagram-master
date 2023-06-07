@@ -168,15 +168,17 @@ export default function CustomDataGrid(props: DataGridProps) {
     const newRow = { id: gridRows.length + 1, tableFieldName: '', mappingField: '', defaultValue: '' };
     setGridRows((prevRows) => [...prevRows, newRow]);
     props.setGridRows((prevRows: any) => [...prevRows, newRow]);
+
   };
 
   const handleDeleteRow = () => {
+
     if (gridRows.length === 0) return; 
     
     const updatedRows = [...gridRows];
+
+    //remove last data
     updatedRows.pop(); 
-    
-    console.log(updatedRows)
     setGridRows(updatedRows);
     props.setGridRows(updatedRows);
   };
@@ -189,7 +191,7 @@ export default function CustomDataGrid(props: DataGridProps) {
     <>
       <div style={{display: 'flex'}}>
         <AddRowButton handleAddRow={handleAddRow}></AddRowButton>
-        <DeleteRowButton handleAddRow={handleDeleteRow}></DeleteRowButton>
+        <DeleteRowButton handleDeleteRow={handleDeleteRow}></DeleteRowButton>
       </div>
       <DataGrid
         rows={gridRows}

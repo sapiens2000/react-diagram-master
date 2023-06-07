@@ -43,7 +43,6 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
 	}
 
     selectFlowAttrInfo: FlowAttr | null = null;
-    test_rows: any;
 
     private isLoadedCallback?: () => boolean;
 
@@ -78,7 +77,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         updtDttm: string;
     };
 
-    gridRows: any[];
+    gridRows: any;
 
     constructor(readonly engine: DiagramEngine) {
         super({ type: "output" });
@@ -99,15 +98,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             updtDttm : "",
         }
 
- 
-        this.gridRows = [];
-        // default
-        // this.flowAttrInfo = { 
-        //     type: 'insert',
-        //     pk: [],
-        //     tableName: '',
-        //     col_info: [...test_rows ]
-        // }
+        this.gridRows = []
 
         const model = engine.getModel()
 
@@ -131,8 +122,8 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         console.log(this.progWorkFlowMng);
 	}
 
-    setGridRows(newGridRows: any[]){
-        this.gridRows = newGridRows
+    setGridRows(newRows: any[]){
+        this.gridRows = [...newRows];
     }
 
     getFlowAttr(port: DefaultPortModel): void {

@@ -1,3 +1,4 @@
+'use strict'
 import {Container, Typography, Button, Select, MenuItem, Grid,SelectChangeEvent } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -6,6 +7,7 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import CustomDataGrid from "./Datagrid";
 import { RowField } from "../node/OutputNodeModel";
+import { propsToClassKey } from "@mui/styles";
 
 const options = ['insert', 'update', 'delete', 'csv'];
 
@@ -13,8 +15,8 @@ export interface OutputModalProps {
     progWorkFlowMng: any;
     setOnModal: (state: boolean) => void;
     selectFieldNames: string[];
-    gridRows: any[];
-    setGridRows: (newGridRows: any[]) => void;
+    gridRows: any;
+    setGridRows: (newRows: any) => void;
 }
 
 const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
@@ -70,16 +72,18 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
                 await getTargetTables(); 
                 await getTargetTableCols(); 
                 //setGridRows(generateGridRows(selectFieldNames)); 
+                if(props.gridRows.length === 0){
+                    var tmp_rows = generateGridRows(selectFieldNames)
+                    setCurGridRows([...tmp_rows]);
+                    console.log(curGridRows)
+                }else{
+                    setCurGridRows([...props.gridRows]);
+                }
             } catch (error) {
                 console.log(error);
             }
         };
-        
-        if(props.gridRows.length === 0){
-            setCurGridRows(generateGridRows(selectFieldNames));
-        }else{
-            setCurGridRows(props.gridRows);
-        }
+    
 
         fetchData();
 	}, []);
@@ -89,9 +93,9 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
         var curFlowAttr: {
             [key: string]: any;
         } = {};
-
+        
         curFlowAttr['type'] = curType; 
-        curFlowAttr['pk'] = ['','']
+        curFlowAttr['pk'] = []
         curFlowAttr['tableName'] = curTargetTable;
         curFlowAttr['col_info'] = [Object.values(targetMappingFields)];
         
@@ -104,7 +108,13 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
             }
         })
 
-        //props.setGridRows(curGridRows);
+        // props.gridRows.push(curGridRows)
+        // props.setGridRows(curGridRows)
+        props.gridRows.splice(0)
+        curGridRows.forEach((row: RowField) => {
+            props.gridRows.push(row);
+        })
+
         console.log(props.gridRows)
         console.log(curFlowAttr);
         alert("save");
@@ -138,7 +148,8 @@ const OutputModal: React.FC<OutputModalProps> = (props: OutputModalProps) => {
           
           setTargetTableCols(data);
           if(props.gridRows.length === 0){
-            setCurGridRows(generateGridRows(selectFieldNames));
+            var tmp_rows = generateGridRows(selectFieldNames)
+            setCurGridRows([...tmp_rows]);
           }
         } catch (error) {
           console.log(error);
