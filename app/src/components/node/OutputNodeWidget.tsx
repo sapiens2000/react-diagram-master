@@ -33,11 +33,14 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
 		// 		}
 		// 	};
 		// 	fetchData();
+      console.log('output render')
     }, []);
 
-
-    // node.refresh();
-    // console.log(node.selectFlowAttrInfo);
+    
+    if(node.selectFlowAttr.col.length == 0){
+      node.refresh();
+      console.log(node.selectFlowAttr.col);
+    }
 
     const handleModalOpen = () => {
         setOnModal(true);
@@ -65,7 +68,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
           <OutputModal
             progWorkFlowMng={node.progWorkFlowMng}
             setOnModal={setOnModal}
-            selectFieldNames={node.selectFieldNames}
+            selectFieldNames={node.selectFlowAttr.col}
             gridRows={node.gridRows}
             setGridRows={node.setGridRows}
           />
