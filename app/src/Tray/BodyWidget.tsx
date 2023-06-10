@@ -265,8 +265,8 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 
 		console.log(project_json);
 		progMstValue = {
-			...progMstValue,
-			viewAttr: JSON.stringify(project_json)
+		  ...progMstValue,
+		  viewAttr: JSON.stringify(project_json, null, 2)
 		};
 		
 		console.log(progMstValue);

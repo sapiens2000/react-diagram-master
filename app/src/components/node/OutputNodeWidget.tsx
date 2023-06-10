@@ -36,6 +36,8 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
       console.log('output render')
     }, []);
 
+
+
     
     if(node.selectFlowAttr.col.length == 0){
       node.refresh();
@@ -71,6 +73,7 @@ const OutputNodeWidget : FC<OutputNodeWidgetProps> = ({engine, node}) => {
             selectFieldNames={node.selectFlowAttr.col}
             gridRows={node.gridRows}
             setGridRows={node.setGridRows}
+            savedFieldStates={node.fieldStates}
           />
         );
       };

@@ -27,7 +27,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 	const [memo, setMemo] = useState("");
 	const [highlightedRowIndex, setHighlightedRowIndex] = useState(null);
 	const [fieldStates, setFieldStates] = useState(null);
-	const [orFilter, setOrFilter] = useState(false);
+	const [orFilter, setOrFilter] = useState("");
 
 	useEffect(() => {
 		if (savedFieldStates) {
@@ -38,7 +38,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 			const initialFieldState = {
 				"": { "condition": "", "filterValue": "", "memo": "" }
 			};
-			initialFieldState.orFilter = false;
+			initialFieldState.orFilter = "and";
 			setFieldStates(initialFieldState);
 		}
 		else {
@@ -47,7 +47,7 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 				acc[field] = { condition: "", filterValue: "", memo: "" };
 				return acc;
 			}, {});
-			initialFieldState.orFilter = false;
+			initialFieldState.orFilter = "and";
 			setFieldStates(initialFieldState);
 		}
 	}, [savedFieldStates, tableField]);
@@ -55,10 +55,11 @@ const FilterModal = ({ dataSet, onFieldStatesUpdate, savedFieldStates, tableFiel
 	const handleOrFilterChange = (event) => {
 		const updatedFieldStates = {
 			...fieldStates,
-			orFilter: event.target.checked
+			orFilter: event.target.checked ? "or" : "and"
 		};
+		console.log(updatedFieldStates)
 		setFieldStates(updatedFieldStates);
-		setOrFilter(event.target.checked);
+		setOrFilter(updatedFieldStates.orFilter);
 	};
 
 	const handleSave = () => {

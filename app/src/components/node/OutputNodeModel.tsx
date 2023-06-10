@@ -21,6 +21,10 @@ import SelectNodeModel, { FlowAttr } from "./SelectNodeModel";
 //     return transformedData;
 //   };
 
+export interface Field {
+	[key: string] : any;
+}
+
 export interface RowField {
     id: number;
     tableFieldName: string;
@@ -42,7 +46,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         col_info: {},
 	}
 
-    selectFlowAttrInfo: FlowAttr | null = null;
+    fieldStates: Field;
 
     private isLoadedCallback?: () => boolean;
 
@@ -64,7 +68,8 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         }
     }
 
-    selectFieldNames = ['user_id','out_pay_name','yyyymmdd'];
+    selectFlowAttr: FlowAttr;
+    testColumns = ['user_id','out_pay_name','yyyymmdd'];
 
     progWorkFlowMng: {
         flowId: number;
@@ -72,7 +77,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
         flowSeq: number;
         flowType: string;
         // for dynamically add datas
-        flowAttr: any;
+        flowAttr: {};
         crtdDttm: string;
         updtDttm: string;
     };
@@ -87,18 +92,21 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             flowId : -1,
             progId : -1,
             flowSeq : -1,
-            flowType : "",
+            flowType : "output",
             flowAttr : {
-                type: 'insert',
-                pk: [],
-                tableName: '',
-                col_info: []
+
             },
             crtdDttm : "",
             updtDttm : "",
         }
 
         this.gridRows = []
+        this.selectFlowAttr = {
+            sql: '',
+            col: []
+        };
+
+        this.fieldStates = null;
 
         const model = engine.getModel()
 
@@ -144,7 +152,7 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
 	}
 
 	setFlowAttr(newAttr: any) {
-		this.selectFlowAttrInfo = newAttr;
+		this.selectFlowAttr = {...newAttr};
 	}
 
     refresh() {
