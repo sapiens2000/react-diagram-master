@@ -240,7 +240,14 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			  }
 		  })
         .then(response => {
-            console.log(response.data);
+			let result: any[] = []
+            response.data.forEach((row : any) => {
+				result.push(row)
+			})
+
+			alert(`노드 타입 : ${result[0].nodeType}, 처리 개수 : ${result[0].resultNum}, 실행 시간 : ${result[0].timeDiff}\n` +
+			`노드 타입 : ${result[1].nodeType}, 처리 개수 : ${result[1].resultNum}, 실행 시간 : ${result[1].timeDiff}\n`+
+			`노드 타입 : ${result[2].nodeType}, 처리 개수 : ${result[2].resultNum}, 실행 시간 : ${result[2].timeDiff}\n`)
         })
         .catch((error) => {
             console.log(error);
