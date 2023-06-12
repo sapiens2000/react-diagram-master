@@ -9,7 +9,7 @@ import { ProjectDiagramModel } from './components/model/ProjectDiagramModel';
 import axios from 'axios';
 
 export default class App {
-  protected activeModel: ProjectDiagramModel;
+  	protected activeModel: ProjectDiagramModel;
 	protected engine: SRD.DiagramEngine;
 
 	private _isLoaded: boolean = false;
@@ -29,7 +29,7 @@ export default class App {
   constructor(newProject: Number) {
 		//this.engine = SRD.default();
     this.engine = createEngine({registerDefaultDeleteItemsAction: false});
-		if(newProject == 0){
+	if(newProject == 0){
       this.newProject();
     }else{
 			this.isLoaded = true;
@@ -45,11 +45,11 @@ export default class App {
     this.engine.getNodeFactories().registerFactory(new OutputNodeFactory());
     this.engine.getNodeFactories().registerFactory(new FilterNodeFactory());
     this.engine.getNodeFactories().registerFactory(new SelectNodeFactory());
-		this.engine.getNodeFactories().registerFactory(new MemoNodeFactory());
+	this.engine.getNodeFactories().registerFactory(new MemoNodeFactory());
 
 
     const model = this.makeNewProg();
-
+	
 		// DB에서 model을 불러왔을 때 workflow가 저장되지 않는 문제가 있다
 		// 노드 실행 시퀀스 확인
 		// 연결하는 상황만 고려한 코드, 끊는 상황을 생각하지 않아 유연성이 떨어짐
@@ -77,7 +77,7 @@ export default class App {
   }
 
   public makeNewProg(): ProjectDiagramModel {
-		var tmp_prog_mst = {
+		let tmp_prog_mst = {
 			progId: 0,
 			progNm: "new project",
 			progDesc: "",
@@ -87,20 +87,22 @@ export default class App {
 			updtDttm: "",
 			dltDttm: ""
 		}
+		const newModel = new ProjectDiagramModel();
 
-		axios.post("/diagram/project", tmp_prog_mst, {maxRedirects: 0})
+		const new_project = async() => await axios.post("/diagram/project", tmp_prog_mst, {maxRedirects: 0})
 			.then(response => {
 				tmp_prog_mst.progId = response.data;
-				console.log(tmp_prog_mst);
+				newModel.setProgMst(tmp_prog_mst);
+				return newModel;
 			})
 			.catch((Error) => {
 				console.log(Error);
 			});
-
-		const newModel = new ProjectDiagramModel();
-		newModel.setProgMst(tmp_prog_mst);
+		
+		new_project();
 		return newModel;
 	}
+
 
 	public loadProject(progId : Number){
 		//////////////////////////////////
@@ -116,22 +118,30 @@ export default class App {
 
 
 
-		axios.post(`/diagram/project/load/${progId}`, progId, { maxRedirects: 0})
+		const load_project = async() => await axios.get(`/diagram/project/load/${progId}`, { maxRedirects: 0})
 			.then(response => {
 				console.log('Response data:', response.data);
-
-				let viewAttr = JSON.parse(response.data.viewAttr);
-				console.log('ViewAttr:', viewAttr);
+				
 				const newModel = new ProjectDiagramModel();
-				newModel.setProgMst(response.data);
+				
+				let progMstDto = {
+					progId: response.data.progId,
+					progNm: response.data.progNm,
+					progDesc: response.data.progDesc,
+					useYn: response.data.useYn,
+				}
+				
+				newModel.setProgMst(progMstDto);
 				this.engine.setModel(newModel);
-				this.engine.getModel().deserializeModel(viewAttr, this.engine);
+				this.engine.getModel().deserializeModel(JSON.parse(response.data.viewAttr), this.engine);
+				console.log(newModel.prog_mst)
 			})
 			.catch((Error) => {
 				console.log(Error);
 			});
-		// 클릭해야 갱신되는 문제 있음 forceupdate() 하고싶은데 어디서?
-		// 다중 JSON을 불러오는데서 문제가 발생함 ProgMsgDto2로 임시처리
+		
+		load_project();
+		//this.engine.repaintCanvas();
 	}
 
 	public getActiveDiagram(): ProjectDiagramModel {

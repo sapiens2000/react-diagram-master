@@ -118,7 +118,7 @@ const FilterNodeWidget : FC<FilterNodeWidgetProps> = ({engine, node}) => {
 					mergedObject[key] = Object.values(node.fieldStates[key]);
 				}
 			}
-
+			mergedObject.orFilter = mergedObject.orFilter.join("")
 			node.progWorkFlowMng = {
 				...node.progWorkFlowMng,
 				flowAttr: JSON.stringify(mergedObject)

@@ -17,21 +17,20 @@ export class ProjectDiagramModel<G extends DiagramModelGenerics = DiagramModelGe
         return this.prog_mst;
     }
 
-    setProgMst(prog_mst: any){
-        this.prog_mst = prog_mst;
+    setProgMst(new_prog_mst: any){
+        this.prog_mst = JSON.parse(JSON.stringify(new_prog_mst));
     }
 
     getProgId(){
         return this.prog_mst.progId;
     }
 
-		setProgId(id: any) {
-				this.prog_mst.progId = id;
-		}
+    setProgId(id: any) {
+            this.prog_mst.progId = id;
+    }
 
     setUseYn(){
-        this.prog_mst.useYn = !this.prog_mst.useYn
-        console.log(this.prog_mst.useYn)
+        this.prog_mst.useYn = !this.prog_mst.useYn 
     }
 
 }

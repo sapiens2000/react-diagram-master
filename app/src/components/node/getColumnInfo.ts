@@ -1,14 +1,24 @@
 export function getColumnInfo(sqlQuery: any) {
-    console.log(sqlQuery);
-    const regex = /AS\s+([^\s,]+)/g;
-    const matches = [];
+    const regexWithAs = /AS\s+([^\s,]+)/g;
+    const regexWithNoAs = /select\s+(.*?)\s+from/i;
+    let matches = [];
+    let columns;
     let match;
-    while (match = regex.exec(sqlQuery)) {
+
+    while (match = regexWithAs.exec(sqlQuery)) {
         matches.push(match[1]);
     }
 
-    console.log(matches);
-    return matches;
+    match = regexWithNoAs.exec(sqlQuery);
+
+    if (match && match[1]) {
+        columns = match[1].split(',').map((column) => column.trim());
+        
+    }
+
+    //console.log(matches);
+    console.log(columns);
+    return columns;
 }
 
 export default getColumnInfo;

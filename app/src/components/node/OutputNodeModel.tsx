@@ -8,53 +8,91 @@ import FilterNodeModel from "./FilterNodeModel";
 import { ProjectDiagramModel } from "../model/ProjectDiagramModel";
 import axios, { AxiosResponse } from "axios";
 import {DeserializeEvent} from "@projectstorm/react-canvas-core";
-import App from '../../App';
+import SelectNodeModel, { FlowAttr } from "./SelectNodeModel";
+
+// const GridrowsToColInfo = (Rows: RowField[]): { [key: string]: string | any[] } => {
+//     const transformedData: { [key: string]: string | any[] } = {};
+  
+//     Rows.forEach((row: any) => {
+//       const { tableFieldName, type, mappingField, defaultValue } = row;
+//       transformedData[tableFieldName] = [type, mappingField, defaultValue];
+//     });
+  
+//     return transformedData;
+//   };
+
+export interface Field {
+	[key: string] : any;
+}
+
+export interface RowField {
+    id: number;
+    tableFieldName: string;
+    mappingField: string;
+    defaultValue: string;
+}
 
 export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
-    dataSet = {
-        value : ['']
+    dataSet: {
+        column: string[]
     }
 
     inPort = new DefaultPortModel(true, "in");
+    
+    flowAttrInfo: {
+		type: string,
+        pk: [],
+        tableName: string,
+        col_info: {},
+	}
+
+    fieldStates: Field;
+
+    private isLoadedCallback?: () => boolean;
+
+    // Add a method to set the callback function.
+    setIsLoadedCallback(callback: () => boolean) {
+        this.isLoadedCallback = callback;
+    }
+
+    init() {
+        if(this.isLoadedCallback && !this.isLoadedCallback()) {
+            axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, {maxRedirects: 0})
+                .catch((error: any) => {
+                    console.log(error);
+                }).then((response: AxiosResponse<string> | void) => {
+                if (response) {
+                    this.progWorkFlowMng.flowId = parseInt(response.data);
+                }
+            });
+        }
+    }
+
+    selectFlowAttr: FlowAttr;
+    testColumns = ['user_id','out_pay_name','yyyymmdd'];
+
     progWorkFlowMng: {
         flowId: number;
         progId: number;
         flowSeq: number;
         flowType: string;
+        // for dynamically add datas
         flowAttr: {};
         crtdDttm: string;
         updtDttm: string;
     };
 
-		private isLoadedCallback?: () => boolean;
-
-		// Add a method to set the callback function.
-		setIsLoadedCallback(callback: () => boolean) {
-			this.isLoadedCallback = callback;
-		}
-
-		init() {
-			if(this.isLoadedCallback && !this.isLoadedCallback()) {
-				axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, {maxRedirects: 0})
-					.catch((error: any) => {
-						console.log(error);
-					}).then((response: AxiosResponse<string> | void) => {
-					if (response) {
-						this.progWorkFlowMng.flowId = parseInt(response.data);
-					}
-				});
-			}
-		}
+    gridRows: any;
 
     constructor(readonly engine: DiagramEngine) {
         super({ type: "output" });
         this.addPort(this.inPort);
+
         this.progWorkFlowMng = {
             flowId : -1,
-            //tmp
             progId : -1,
             flowSeq : -1,
-            flowType : "",
+            flowType : "output",
             flowAttr : {
 
             },
@@ -62,56 +100,64 @@ export class OutputNodeModel extends NodeModel<NodeModelGenerics> {
             updtDttm : "",
         }
 
+        this.gridRows = []
+        this.selectFlowAttr = {
+            sql: '',
+            col: []
+        };
+
+        this.fieldStates = null;
+
         const model = engine.getModel()
 
         if (model instanceof ProjectDiagramModel){
-            const progMst = model.getProgMst();
-            this.progWorkFlowMng.progId = progMst.progId;
+            this.progWorkFlowMng.progId = model.prog_mst.progId;
         } else{
             console.log('Invalid model type');
         }
-
-			// 불러오기를 실행했을 때 Deserialize 내용을 아래의 respose.data가 덮어써서 새로운 flowId를 할당하는 버그가 있음
-			// 이를 위해 프로젝트를 불러왔는지를 체크하여 생성하고자 메소드 init()으로 분러함
-			// if(this.progWorkFlowMng.flowId == -1) {
-			// 	axios.post(`/diagram/project/save-node/${this.progWorkFlowMng.progId}`, this.progWorkFlowMng, {maxRedirects: 0})
-			// 		.catch((error: any) => {
-			// 			console.log(error);
-			// 		}).then((response: AxiosResponse<string> | void) => {
-			// 		if (response) {
-			// 			this.progWorkFlowMng.flowId = parseInt(response.data);
-			// 		}
-			// 	});
-			// }
     }
 
     serialize() {
         return {
             ...super.serialize(),
-            value: this.dataSet.value,
-						progWorkFlowMng: this.progWorkFlowMng
+            progWorkFlowMng: this.progWorkFlowMng
         };
     }
 
 	deserialize(event: DeserializeEvent<this>) {
 		super.deserialize(event);
-		this.dataSet.value = event.data.value;
 		this.progWorkFlowMng = event.data.progWorkFlowMng;
+        console.log(this.progWorkFlowMng);
 	}
 
-    getNumber(port: DefaultPortModel): void {
-        const link = Object.values(port.getLinks())[0];
-        const node = link?.getSourcePort()?.getNode();
-
-        if (node instanceof FilterNodeModel) {
-            console.log(node.dataSet.value)
-            this.setValue(node.dataSet.value)
-        }
+    setGridRows(newRows: any[]){
+        this.gridRows = [...newRows];
     }
 
-    setValue(value: string[]) {
-        this.dataSet.value = [...value];
-    }
+    getFlowAttr(port: DefaultPortModel): void {
+		let link = Object.values(port.getLinks())[0];
+		let node = link?.getSourcePort()?.getNode();
+
+		if (node instanceof FilterNodeModel) {
+            let snode = Object.values(node.getPort('in').getLinks())[0]?.getSourcePort().getNode();
+            
+            if(snode instanceof SelectNodeModel){
+                console.log(snode.getFlowAttr())
+                this.setFlowAttr(snode.getFlowAttr());
+            }
+		} else if(node instanceof SelectNodeModel){
+            this.setFlowAttr(node.getFlowAttr())
+            console.log(node.getFlowAttr());
+        } 
+	}
+
+	setFlowAttr(newAttr: any) {
+		this.selectFlowAttr = {...newAttr};
+	}
+
+    refresh() {
+		this.getFlowAttr(this.inPort);
+	}
 
 }
 

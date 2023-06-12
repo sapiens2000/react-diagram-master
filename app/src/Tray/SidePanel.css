@@ -1,0 +1,23 @@
+.explorer-panel {
+    width: 200px;
+    transition: height 0.3s ease;
+  }
+  
+  .explorer-panel.collapsed {
+    height: 30px;
+  }
+  
+  .explorer-panel .header {
+    height: 30px;
+    background-color: #282c34; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ffffff; 
+  }
+  
+  .explorer-panel .content {
+    background-color: #141414;
+    height: 200px;
+  }

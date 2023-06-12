@@ -10,7 +10,7 @@ import SelectNodeModel from '../components/node/SelectNodeModel';
 import OutputNodeModel from '../components/node/OutputNodeModel';
 import FilterNodeModel from '../components/node/FilterNodeModel';
 import MemoNodeModel from '../components/node/MemoNodeModel';
-import {Grid, IconButton, Modal, Typography} from '@mui/material';
+import {Box, Button, Grid, IconButton, Modal, Typography} from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
@@ -22,10 +22,12 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import axios from 'axios';
+import ProjectInfoModal from '../components/modal/ProjectInfoModal';
+import SidePanel from './SidePanel';
 import { ProjectDiagramModel } from '../components/model/ProjectDiagramModel';
-import axios from "axios";
-import {Box} from "@mui/system";
-import Button from "@mui/material/Button";
+import { channel } from 'diagnostics_channel';
+import qs from 'qs';
 
 export interface BodyWidgetProps {
 	app: App;
@@ -203,13 +205,14 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				this.props.app.workflow.push(tempFlowList);
 			}
 
-			console.log(this.props.app.workflow);
+			// console.log(this.props.app.workflow);
 
-			console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
-			console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
+			// console.log(`Link ${key} connects node ${sourceNode.getID()} to ${targetNode.getID()}`);
+			// console.log(`It uses port ${link.getSourcePort().getID()} on the source node and port ${link.getTargetPort().getID()} on the target node`);
 		}
 
 		let chains = this.props.app.workflow.map(a => [...a]);
+
 
 		for (let i = 0 ; i < chains.length; i++) {
 			for (let j = 0 ; j < chains.length; j++) {
@@ -220,7 +223,37 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			}
 		}
 
-		console.log(chains.filter(a => a.length > 0));
+		var progId = (this.props.app.getDiagramEngine().getModel() as ProjectDiagramModel).getProgId()
+		let _flowSeq = chains.filter(item => item.length > 0);
+
+		
+		let tmp_flowSeq = [_flowSeq[0][0].toString(), _flowSeq[0][1].toString(), _flowSeq[0][2].toString()];
+
+		// const encodedFlowSeq = (tmp_flowSeq as string[]).map(seq => encodeURIComponent(seq));
+
+		const play_seq = async() => await axios.get(`/diagram/project/sql-result/${progId}`, {
+			params: {
+				flowSeq: tmp_flowSeq
+			},
+			paramsSerializer: params => {
+				return qs.stringify(params, { arrayFormat: 'repeat' });
+			  }
+		  })
+        .then(response => {
+			let result: any[] = []
+            response.data.forEach((row : any) => {
+				result.push(row)
+			})
+
+			alert(`노드 타입 : ${result[0].nodeType}, 처리 개수 : ${result[0].resultNum}, 실행 시간 : ${result[0].timeDiff}\n` +
+			`노드 타입 : ${result[1].nodeType}, 처리 개수 : ${result[1].resultNum}, 실행 시간 : ${result[1].timeDiff}\n`+
+			`노드 타입 : ${result[2].nodeType}, 처리 개수 : ${result[2].resultNum}, 실행 시간 : ${result[2].timeDiff}\n`)
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+		play_seq();
 	}
 
 	handleSaveProject = () => {
@@ -236,13 +269,15 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 				}
 			}
 		});
+
 		console.log(project_json);
 		progMstValue = {
-			...progMstValue,
-			viewAttr: JSON.stringify(project_json)
+		  ...progMstValue,
+		  viewAttr: JSON.stringify(project_json, null, 2)
 		};
+		
 		console.log(progMstValue);
-		console.log(`/diagram/project/update/${progMstValue.progId}`);
+
 		axios.post(`/diagram/project/update/${progMstValue.progId}`, progMstValue, { maxRedirects: 0})
 			.then(response => {
 				console.log(response.data);
@@ -250,10 +285,12 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 			.catch((Error) => {
 				console.log(Error);
 		});
+
+		this.props.app.getDiagramEngine().repaintCanvas();
 	}
 
 	handleUseChange = (e: any) => {
-		const current_model = this.props.app.getActiveDiagram().setUseYn();
+		(this.props.app.getDiagramEngine().getModel() as ProjectDiagramModel).setUseYn();
 	}
 
 	render() {
@@ -317,6 +354,16 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								<IconButton onClick={this.handleOpen}>
 										<FolderOpenIcon fontSize="large" style={{ color: 'white' }} />
 								</IconButton>
+								{/* {isProjectInfoModalOpen && (
+									<div className="modal-overlay">
+										<div className="modal-container">
+											<ProjectInfoModal
+											onClose={this.handleCloseModal}
+											onProjectSelect={this.handleProjectSelect}
+											/>
+										</div>
+									</div>
+								)} */}
 							</S.ButtonBox>
 						</S.Header>
 						<S.Layer
@@ -345,7 +392,6 @@ export class BodyWidget extends React.Component<BodyWidgetProps> {
 								node.setPosition(point);
 								this.props.app.getDiagramEngine().getModel().addNode(node);
 								this.forceUpdate();
-								console.log('drag stopped')
 							}}
 							onDragOver={(event) => {
 								event.preventDefault();
